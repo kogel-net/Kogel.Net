@@ -24,4 +24,7 @@
       <Version>3.1.1</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="WebSocket\Server\" />
+  </ItemGroup>
 </Project>
