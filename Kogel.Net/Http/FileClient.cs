@@ -121,7 +121,6 @@ namespace Kogel.Net.Http
             {
                 Method = "POST",
                 Url = url,
-                //ContentType = "application/x-www-form-urlencoded",
                 PostDataType = PostDataType.FilePath,
                 PostData = path,
                 Header = webHeader
