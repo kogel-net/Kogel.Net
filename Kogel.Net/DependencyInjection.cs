@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Kogel.Net;
 using Kogel.Net.Http;
+using Kogel.Net.Http.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -23,6 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddKogelHttpClient(this IServiceCollection services)
         {
             services.AddScoped<IHttpClient, HttpClient>();
+            services.AddScoped<IFileClient, FileClient>();
             return services;
         }
     }

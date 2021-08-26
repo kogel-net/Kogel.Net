@@ -20,8 +20,8 @@ namespace Kogel.Net.Http
     {
         private Encoding encoding = Encoding.Default;
         private Encoding postencoding = Encoding.Default;
-        private HttpWebRequest httpRequest = null;
-        private HttpWebResponse httpResponse = null;
+        internal HttpWebRequest httpRequest = null;
+        internal HttpWebResponse httpResponse = null;
         #region Aop
         public static AopProvider Aop { get => AopProvider.Get(); }
         #endregion
@@ -170,7 +170,7 @@ namespace Kogel.Net.Http
         /// 设置请求参数
         /// </summary>
         ///<param name="request"></param>
-        private void SetRequest(KogelRequest request)
+        internal void SetRequest(KogelRequest request)
         {
             // 验证证书
             SetCer(request);
@@ -479,6 +479,35 @@ namespace Kogel.Net.Http
                 Aop.InvokeExecuted(request);
             }
             return response;
+        }
+
+        /// <summary>
+        /// 设置头部信息
+        /// </summary>
+        /// <param name="authorizationToken"></param>
+        /// <param name="authorizationMethod"></param>
+        /// <param name="header"></param>
+        /// <returns></returns>
+        public WebHeaderCollection SetHeader(string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
+        {
+            WebHeaderCollection webHeader = new WebHeaderCollection();
+            //设置身份授权Token
+            if (!string.IsNullOrEmpty(authorizationToken))
+            {
+                if (!string.IsNullOrEmpty(authorizationMethod))
+                    webHeader.Add("Authorization", $"{authorizationMethod} {authorizationToken}");
+                else
+                    webHeader.Add("Authorization", authorizationToken);
+            }
+            //设置请求头
+            if (header != null)
+            {
+                foreach (var item in header)
+                {
+                    webHeader.Add(item.Key, item.Value);
+                }
+            }
+            return webHeader;
         }
     }
 }

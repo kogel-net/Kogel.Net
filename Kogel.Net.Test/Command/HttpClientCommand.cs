@@ -1,10 +1,12 @@
 ﻿using Kogel.Net.Http;
+using Kogel.Net.Http.Interfaces;
 using Kogel.Net.Test.Entites;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.IO;
 
 namespace Kogel.Net.Test.Command
 {
@@ -14,9 +16,11 @@ namespace Kogel.Net.Test.Command
     public class HttpClientCommand : ICommand
     {
         IHttpClient httpClient;
-        public HttpClientCommand(IHttpClient httpClient)
+        IFileClient fileClient;
+        public HttpClientCommand(IHttpClient httpClient, IFileClient fileClient)
         {
             this.httpClient = httpClient;
+            this.fileClient = fileClient;
         }
 
         string accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOiIxNjI5OTQxNTM5IiwiZXhwIjoxNjMyNTMzNTM5LCJVc2VySWQiOiI0IiwiVXNlckNvZGUiOiJwZXRlciIsIlVzZXJOYW1lIjoicGV0ZXIiLCJHcm91cENvZGUiOiJBZG1pbiIsIkdyb3VwTmFtZSI6IueuoeeQhuWRmCIsImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6ImxvY2FsaG9zdCJ9.5KcKQYg0zq0ySo0CslcJB38fsMGVGhNcrRU1R-OM5Sc";
@@ -40,6 +44,12 @@ namespace Kogel.Net.Test.Command
 
             //自定义请求
             Request();
+
+            //文件下载
+            DownLoad();
+
+            //文件上传
+            Upload();
         }
 
         /// <summary>
@@ -57,7 +67,7 @@ namespace Kogel.Net.Test.Command
         /// <param name="request"></param>
         private void Aop_OnExecuted(KogelRequest request)
         {
-         
+
         }
 
 
@@ -109,6 +119,29 @@ namespace Kogel.Net.Test.Command
             });
             //response.StatusCode//状态码
             Console.WriteLine(response.Result);
+        }
+
+        /// <summary>
+        /// 文件下载
+        /// </summary>
+        private void DownLoad()
+        {
+            string path = $"{Directory.GetCurrentDirectory()}\\abc.png";
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            fileClient.Download("http://159.75.232.135:81/files/abc.png", path);
+        }
+
+        /// <summary>
+        /// 文件上传
+        /// </summary>
+        private void Upload()
+        {
+            string path = $"{Directory.GetCurrentDirectory()}\\abc.png";
+            var resultResponse = fileClient.Upload("https://localhost:44370/api/file/uplpad?suffix=png", path, accessToken);
+            Console.WriteLine(JsonConvert.SerializeObject(resultResponse));
         }
     }
 }

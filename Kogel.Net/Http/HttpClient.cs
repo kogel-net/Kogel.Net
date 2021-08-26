@@ -1,5 +1,6 @@
 ﻿extern alias Kogel_Http;
 
+using Kogel.Net.Http.Interfaces;
 using Kogel_Http::Newtonsoft.Json;
 using Kogel_Http::Newtonsoft.Json.Serialization;
 using System;
@@ -26,8 +27,8 @@ namespace Kogel.Net.Http
         /// <returns></returns>
         public string Get(string url, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
         {
-            var webHeader = SetHeader(authorizationToken, authorizationMethod, header);
             HttpBase httpBase = new HttpBase();
+            var webHeader = httpBase.SetHeader(authorizationToken, authorizationMethod, header);
             var response = httpBase.GetResponse(new KogelRequest
             {
                 Method = "GET",
@@ -48,8 +49,8 @@ namespace Kogel.Net.Http
         /// <returns></returns>
         public TResult Get<TResult>(string url, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
         {
-            var webHeader = SetHeader(authorizationToken, authorizationMethod, header);
             HttpBase httpBase = new HttpBase();
+            var webHeader = httpBase.SetHeader(authorizationToken, authorizationMethod, header);
             var response = httpBase.GetResponse(new KogelRequest
             {
                 Method = "GET",
@@ -69,8 +70,8 @@ namespace Kogel.Net.Http
         /// <returns></returns>
         public async Task<string> GetAsync(string url, string authorizationToken, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
         {
-            var webHeader = SetHeader(authorizationToken, authorizationMethod, header);
             HttpBase httpBase = new HttpBase();
+            var webHeader = httpBase.SetHeader(authorizationToken, authorizationMethod, header);
             var response = await httpBase.GetResponseAsync(new KogelRequest
             {
                 Method = "GET",
@@ -91,8 +92,8 @@ namespace Kogel.Net.Http
         /// <returns></returns>
         public async Task<TResult> GetAsync<TResult>(string url, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
         {
-            var webHeader = SetHeader(authorizationToken, authorizationMethod, header);
             HttpBase httpBase = new HttpBase();
+            var webHeader = httpBase.SetHeader(authorizationToken, authorizationMethod, header);
             var response = await httpBase.GetResponseAsync(new KogelRequest
             {
                 Method = "GET",
@@ -114,8 +115,8 @@ namespace Kogel.Net.Http
         /// <returns></returns>
         public KogelResponse Post(string url, object postData, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
         {
-            var webHeader = SetHeader(authorizationToken, authorizationMethod, header);
             HttpBase httpBase = new HttpBase();
+            var webHeader = httpBase.SetHeader(authorizationToken, authorizationMethod, header);
             var response = httpBase.GetResponse(new KogelRequest
             {
                 Method = "POST",
@@ -139,8 +140,8 @@ namespace Kogel.Net.Http
         /// <returns></returns>
         public TResult Post<TResult>(string url, object postData, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
         {
-            var webHeader = SetHeader(authorizationToken, authorizationMethod, header);
             HttpBase httpBase = new HttpBase();
+            var webHeader = httpBase.SetHeader(authorizationToken, authorizationMethod, header);
             var response = httpBase.GetResponse(new KogelRequest
             {
                 Method = "POST",
@@ -163,8 +164,8 @@ namespace Kogel.Net.Http
         /// <returns></returns>
         public async Task<KogelResponse> PostAsync(string url, object postData, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
         {
-            var webHeader = SetHeader(authorizationToken, authorizationMethod, header);
             HttpBase httpBase = new HttpBase();
+            var webHeader = httpBase.SetHeader(authorizationToken, authorizationMethod, header);
             var response = await httpBase.GetResponseAsync(new KogelRequest
             {
                 Method = "POST",
@@ -188,8 +189,8 @@ namespace Kogel.Net.Http
         /// <returns></returns>
         public async Task<TResult> PostAsync<TResult>(string url, object postData, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
         {
-            var webHeader = SetHeader(authorizationToken, authorizationMethod, header);
             HttpBase httpBase = new HttpBase();
+            var webHeader = httpBase.SetHeader(authorizationToken, authorizationMethod, header); 
             var response = await httpBase.GetResponseAsync(new KogelRequest
             {
                 Method = "POST",
@@ -223,35 +224,6 @@ namespace Kogel.Net.Http
             HttpBase httpBase = new HttpBase();
             var response = await httpBase.GetResponseAsync(request);
             return response;
-        }
-
-        /// <summary>
-        /// 设置头部信息
-        /// </summary>
-        /// <param name="authorizationToken"></param>
-        /// <param name="authorizationMethod"></param>
-        /// <param name="header"></param>
-        /// <returns></returns>
-        private WebHeaderCollection SetHeader(string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null)
-        {
-            WebHeaderCollection webHeader = new WebHeaderCollection();
-            //设置身份授权Token
-            if (!string.IsNullOrEmpty(authorizationToken))
-            {
-                if (!string.IsNullOrEmpty(authorizationMethod))
-                    webHeader.Add("Authorization", $"{authorizationMethod} {authorizationToken}");
-                else
-                    webHeader.Add("Authorization", authorizationToken);
-            }
-            //设置请求头
-            if (header != null)
-            {
-                foreach (var item in header)
-                {
-                    webHeader.Add(item.Key, item.Value);
-                }
-            }
-            return webHeader;
         }
 
         /// <summary>
