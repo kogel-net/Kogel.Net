@@ -85,12 +85,12 @@ namespace Kogel.Net.Test.Command
         /// </summary>
         private void Post()
         {
-            var response = httpClient.Post("http://159.75.232.135:81/api/basic/cost_info/get_list", new { cost_code = "837" }, accessToken);
+            var response = httpClient.Post("https://localhost:44370/api/basic/cost_info/get_list", new { cost_code = "837" }, accessToken);
             //response.StatusCode//状态码
             Console.WriteLine(response.Result);
 
             //指定类型返回
-            var resultResponse = httpClient.Post<ResultResponse<PageList<GetCostInfoListReponse>>>("http://159.75.232.135:81/api/basic/cost_info/get_list", new { cost_code = "837" }, accessToken);
+            var resultResponse = httpClient.Post<ResultResponse<PageList<GetCostInfoListReponse>>>("https://localhost:44370/api/basic/cost_info/get_list", new { cost_code = "837" }, accessToken);
             Console.WriteLine(JsonConvert.SerializeObject(resultResponse));
         }
 
@@ -111,7 +111,7 @@ namespace Kogel.Net.Test.Command
             var response = httpClient.Request(new KogelRequest
             {
                 Method = "post",
-                Url = "http://159.75.232.135:81/api/basic/cost_info/get_list",
+                Url = "https://localhost:44370/api/basic/cost_info/get_list",
                 ContentType = "application/json",
                 PostDataType = PostDataType.Byte,
                 PostDataByte = byteArr,
@@ -131,7 +131,7 @@ namespace Kogel.Net.Test.Command
             {
                 File.Delete(path);
             }
-            fileClient.Download("http://159.75.232.135:81/files/abc.png", path);
+            fileClient.Download("https://localhost:44370/files/abc.png", path);
         }
 
         /// <summary>
