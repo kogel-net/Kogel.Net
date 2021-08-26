@@ -1,12 +1,12 @@
-﻿using Kogel.Http.Extension;
-using Kogel.Http.Test.Entites;
+﻿using Kogel.Net.Extension;
+using Kogel.Net.Test.Entites;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace Kogel.Http.Test.Command
+namespace Kogel.Net.Test.Command
 {
     /// <summary>
     /// http请求执行

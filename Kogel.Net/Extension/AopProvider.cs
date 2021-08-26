@@ -6,7 +6,7 @@ using System.Threading;
 using System.Runtime.Remoting.Messaging;
 #endif
 
-namespace Kogel.Http.Extension
+namespace Kogel.Net.Extension
 {
     /// <summary>
     /// 

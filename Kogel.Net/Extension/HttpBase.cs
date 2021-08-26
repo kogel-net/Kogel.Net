@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Kogel.Http.Extension
+namespace Kogel.Net.Extension
 {
     /// <summary>
     /// 

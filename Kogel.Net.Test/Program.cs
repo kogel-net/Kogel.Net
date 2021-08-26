@@ -1,9 +1,9 @@
-﻿using Kogel.Http.Test.Command;
+﻿using Kogel.Net.Test.Command;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 
-namespace Kogel.Http.Test
+namespace Kogel.Net.Test
 {
     class Program
     {

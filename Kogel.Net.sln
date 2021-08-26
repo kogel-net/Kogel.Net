@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kogel.Net", "Kogel.Net\Kogel.Net.csproj", "{E1F278EE-D0C2-4584-8242-92170F4F7D38}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kogel.Net.Test", "Kogel.Net.Test\Kogel.Net.Test.csproj", "{EAE8340E-8474-4658-B814-2762A3CA85EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E1F278EE-D0C2-4584-8242-92170F4F7D38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1F278EE-D0C2-4584-8242-92170F4F7D38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1F278EE-D0C2-4584-8242-92170F4F7D38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1F278EE-D0C2-4584-8242-92170F4F7D38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAE8340E-8474-4658-B814-2762A3CA85EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAE8340E-8474-4658-B814-2762A3CA85EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAE8340E-8474-4658-B814-2762A3CA85EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAE8340E-8474-4658-B814-2762A3CA85EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E06D6E1-DCDD-4D0B-8CA6-6FB867DA7E60}
+	EndGlobalSection
+EndGlobal

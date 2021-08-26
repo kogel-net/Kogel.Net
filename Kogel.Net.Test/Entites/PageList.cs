@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Kogel.Http.Test.Entites
+namespace Kogel.Net.Test.Entites
 {
     public class PageList<T>
     {

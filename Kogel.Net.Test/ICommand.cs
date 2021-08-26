@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Kogel.Http.Test
+namespace Kogel.Net.Test
 {
     public interface ICommand
     {

@@ -9,7 +9,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kogel.Http.Extension
+namespace Kogel.Net.Extension
 {
     /// <summary>
     /// 
@@ -238,7 +238,10 @@ namespace Kogel.Http.Extension
             //设置身份授权Token
             if (!string.IsNullOrEmpty(authorizationToken))
             {
-                webHeader.Add("Authorization", $"{authorizationMethod} {authorizationToken}");
+                if (!string.IsNullOrEmpty(authorizationMethod))
+                    webHeader.Add("Authorization", $"{authorizationMethod} {authorizationToken}");
+                else
+                    webHeader.Add("Authorization", authorizationToken);
             }
             //设置请求头
             if (header != null)
