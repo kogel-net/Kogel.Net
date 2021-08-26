@@ -143,5 +143,37 @@ namespace Kogel.Net.Test.Command
             var resultResponse = fileClient.Upload("https://localhost:44370/api/file/uplpad?suffix=png", path, accessToken);
             Console.WriteLine(JsonConvert.SerializeObject(resultResponse));
         }
+
+        ///// <summary>
+        ///// 文件上传（通过流）
+        ///// </summary>
+        ///// <returns></returns>
+        //private ResultResponse<List<string>> UploadByte()
+        //{
+        //    ResultResponse<List<string>> resultResponse = new ResultResponse<List<string>>();
+        //    var directory = $"{Directory.GetCurrentDirectory()}\\Files\\{DateTime.Now.ToString("yyyyMMdd")}\\";
+        //    try
+        //    {
+        //        List<string> list = new List<string>();
+        //        var stream = Request.Body;
+        //        var nByte = new byte[stream.Length];
+        //        stream.Write(nByte, 0, nByte.Length);
+        //        var fileName = DateTime.Now.ToString("HHmmssffff") + (new Random().Next(1000, 9999)) + Request.Query["suffix"].ToString();
+        //        if (!Directory.Exists(directory))
+        //        {
+        //            Directory.CreateDirectory(directory);
+        //        }
+        //        System.IO.File.WriteAllBytes(directory + fileName, nByte);
+        //        list.Add($"Files/{DateTime.Now.ToString("yyyyMMdd")}/" + fileName);
+        //        resultResponse.Data = list;
+        //        resultResponse.Message = $"上传成功";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        resultResponse.Success = false;
+        //        resultResponse.Message = $"上传失败,{ex.Message}";
+        //    }
+        //    return resultResponse;
+        //}
     }
 }
