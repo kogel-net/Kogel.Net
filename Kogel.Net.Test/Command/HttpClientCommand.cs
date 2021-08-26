@@ -1,4 +1,4 @@
-﻿using Kogel.Net.Extension;
+﻿using Kogel.Net.Http;
 using Kogel.Net.Test.Entites;
 using Newtonsoft.Json;
 using System;

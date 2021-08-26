@@ -6,8 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kogel.Http\Kogel.Net.csproj" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Kogel.Net\Kogel.Net.csproj" />
   </ItemGroup>
 
 </Project>

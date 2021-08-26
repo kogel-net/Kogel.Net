@@ -1,11 +1,11 @@
-﻿using Kogel.Net.Extension;
+﻿using Kogel.Net.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kogel.Net
+namespace Kogel.Net.Http
 {
     /// <summary>
     /// 

@@ -5,7 +5,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace Kogel.Net.Extension
+namespace Kogel.Net.Http
 {
     /// <summary>
     /// 请求

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Kogel.Net.Extension
+namespace Kogel.Net.Http
 {
     /// <summary>
     /// JsonConvert转换兼容
