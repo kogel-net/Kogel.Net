@@ -5,8 +5,7 @@
     <PackageTags>http;爬虫;远程请求;websocket;长连接;</PackageTags>
     <Title>Kogel.Net</Title>
     <Description>
-      官方文档见Demo
-      https://github.com/a935368322/Kogel.Net/blob/master/Kogel.Net.Test/Command/HttpClientCommand.cs
+      http;爬虫;远程请求;websocket;长连接;
     </Description>
     <Authors>Kogel</Authors>
     <TargetFrameworks>net45;net451;netstandard2.0;netcoreapp2.1;netcoreapp3.1;</TargetFrameworks>
