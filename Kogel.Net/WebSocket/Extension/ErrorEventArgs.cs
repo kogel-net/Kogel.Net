@@ -7,41 +7,35 @@ using System.Threading.Tasks;
 namespace Kogel.Net.WebSocket.Extension
 {
     /// <summary>
-    /// 
+    /// 异常事件
     /// </summary>
     public class ErrorEventArgs : EventArgs
     {
-        #region Private Fields
-
         private Exception _exception;
         private string _message;
 
-        #endregion
-
-        #region Internal Constructors
-
-        internal ErrorEventArgs(string message)
-          : this(message, null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        internal ErrorEventArgs(string message): this(message, null)
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="exception"></param>
         internal ErrorEventArgs(string message, Exception exception)
         {
             _message = message;
             _exception = exception;
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
-        /// Gets the exception that caused the error.
+        /// 获取导致错误的异常
         /// </summary>
-        /// <value>
-        /// An <see cref="System.Exception"/> instance that represents the cause of
-        /// the error if it is due to an exception; otherwise, <see langword="null"/>.
-        /// </value>
         public Exception Exception
         {
             get
@@ -51,11 +45,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets the error message.
+        /// 获取错误信息
         /// </summary>
-        /// <value>
-        /// A <see cref="string"/> that represents the error message.
-        /// </value>
         public string Message
         {
             get
@@ -63,7 +54,5 @@ namespace Kogel.Net.WebSocket.Extension
                 return _message;
             }
         }
-
-        #endregion
     }
 }

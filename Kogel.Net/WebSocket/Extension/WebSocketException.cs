@@ -12,13 +12,7 @@ namespace Kogel.Net.WebSocket.Extension
     /// </summary>
     public class WebSocketException : Exception
     {
-        #region Private Fields
-
         private CloseStatusCode _code;
-
-        #endregion
-
-        #region Internal Constructors
 
         internal WebSocketException()
           : this(CloseStatusCode.Abnormal, null, null)
@@ -63,17 +57,9 @@ namespace Kogel.Net.WebSocket.Extension
             _code = code;
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
-        /// Gets the status code indicating the cause of the exception.
+        /// 获取指示异常原因的状态码
         /// </summary>
-        /// <value>
-        /// One of the <see cref="CloseStatusCode"/> enum values that represents
-        /// the status code indicating the cause of the exception.
-        /// </value>
         public CloseStatusCode Code
         {
             get
@@ -81,7 +67,5 @@ namespace Kogel.Net.WebSocket.Extension
                 return _code;
             }
         }
-
-        #endregion
     }
 }

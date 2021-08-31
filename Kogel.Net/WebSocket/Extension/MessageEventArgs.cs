@@ -8,25 +8,31 @@ using System.Threading.Tasks;
 
 namespace Kogel.Net.WebSocket.Extension
 {
+    /// <summary>
+    /// 消息事件
+    /// </summary>
     public class MessageEventArgs : EventArgs
     {
-        #region Private Fields
-
         private string _data;
         private bool _dataSet;
         private Opcode _opcode;
         private byte[] _rawData;
 
-        #endregion
-
-        #region Internal Constructors
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="frame"></param>
         internal MessageEventArgs(WebSocketFrame frame)
         {
             _opcode = frame.Opcode;
             _rawData = frame.PayloadData.ApplicationData;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="opcode"></param>
+        /// <param name="rawData"></param>
         internal MessageEventArgs(Opcode opcode, byte[] rawData)
         {
             if ((ulong)rawData.LongLength > PayloadData.MaxLength)
@@ -36,17 +42,9 @@ namespace Kogel.Net.WebSocket.Extension
             _rawData = rawData;
         }
 
-        #endregion
-
-        #region Internal Properties
-
         /// <summary>
-        /// Gets the opcode for the message.
+        /// 获取消息的操作码
         /// </summary>
-        /// <value>
-        /// <see cref="Opcode.Text"/>, <see cref="Opcode.Binary"/>,
-        /// or <see cref="Opcode.Ping"/>.
-        /// </value>
         internal Opcode Opcode
         {
             get
@@ -55,33 +53,23 @@ namespace Kogel.Net.WebSocket.Extension
             }
         }
 
-        #endregion
 
-        #region Public Properties
 
         /// <summary>
-        /// Gets the message data as a <see cref="string"/>.
+        /// 获取消息数据作为字符串
         /// </summary>
-        /// <value>
-        /// A <see cref="string"/> that represents the message data if its type is
-        /// text or ping and if decoding it to a string has successfully done;
-        /// otherwise, <see langword="null"/>.
-        /// </value>
         public string Data
         {
             get
             {
-                setData();
+                SetData();
                 return _data;
             }
         }
 
         /// <summary>
-        /// Gets a value indicating whether the message type is binary.
+        /// 获取指示消息类型是否为二进制的值
         /// </summary>
-        /// <value>
-        /// <c>true</c> if the message type is binary; otherwise, <c>false</c>.
-        /// </value>
         public bool IsBinary
         {
             get
@@ -91,11 +79,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets a value indicating whether the message type is ping.
+        /// 获取指示消息类型是否为 ping 的值
         /// </summary>
-        /// <value>
-        /// <c>true</c> if the message type is ping; otherwise, <c>false</c>.
-        /// </value>
         public bool IsPing
         {
             get
@@ -105,11 +90,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets a value indicating whether the message type is text.
+        /// 获取指示消息类型是否为文本
         /// </summary>
-        /// <value>
-        /// <c>true</c> if the message type is text; otherwise, <c>false</c>.
-        /// </value>
         public bool IsText
         {
             get
@@ -119,25 +101,21 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets the message data as an array of <see cref="byte"/>.
+        /// 以数组的形式获取消息数据
         /// </summary>
-        /// <value>
-        /// An array of <see cref="byte"/> that represents the message data.
-        /// </value>
         public byte[] RawData
         {
             get
             {
-                setData();
+                SetData();
                 return _rawData;
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
-        private void setData()
+        /// <summary>
+        /// 
+        /// </summary>
+        private void SetData()
         {
             if (_dataSet)
                 return;
@@ -154,7 +132,5 @@ namespace Kogel.Net.WebSocket.Extension
 
             _dataSet = true;
         }
-
-        #endregion
     }
 }

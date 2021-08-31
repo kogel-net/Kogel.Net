@@ -18,8 +18,6 @@ namespace Kogel.Net.WebSocket.Extension
     /// </summary>
     public class HttpServer
     {
-        #region Private Fields
-
         private System.Net.IPAddress _address;
         private string _docRootPath;
         private string _hostname;
@@ -31,83 +29,27 @@ namespace Kogel.Net.WebSocket.Extension
         private volatile ServerState _state;
         private object _sync;
 
-        #endregion
-
-        #region Public Constructors
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpServer"/> class.
+        /// 
         /// </summary>
-        /// <remarks>
-        /// The new instance listens for incoming requests on
-        /// <see cref="System.Net.IPAddress.Any"/> and port 80.
-        /// </remarks>
         public HttpServer()
         {
-            init("*", System.Net.IPAddress.Any, 80, false);
+            Init("*", System.Net.IPAddress.Any, 80, false);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpServer"/> class with
-        /// the specified port.
+        /// 用指定的端口初始化 <see cref="HttpServer"/> 类的新实例
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   The new instance listens for incoming requests on
-        ///   <see cref="System.Net.IPAddress.Any"/> and <paramref name="port"/>.
-        ///   </para>
-        ///   <para>
-        ///   It provides secure connections if <paramref name="port"/> is 443.
-        ///   </para>
-        /// </remarks>
-        /// <param name="port">
-        /// An <see cref="int"/> that specifies the number of the port on which
-        /// to listen.
-        /// </param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="port"/> is less than 1 or greater than 65535.
-        /// </exception>
+        /// <param name="port"></param>
         public HttpServer(int port)
           : this(port, port == 443)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpServer"/> class with
-        /// the specified URL.
+        /// 使用指定的 URL 初始化 <see cref="HttpServer"/> 类的新实例
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   The new instance listens for incoming requests on the IP address and
-        ///   port of <paramref name="url"/>.
-        ///   </para>
-        ///   <para>
-        ///   Either port 80 or 443 is used if <paramref name="url"/> includes
-        ///   no port. Port 443 is used if the scheme of <paramref name="url"/>
-        ///   is https; otherwise, port 80 is used.
-        ///   </para>
-        ///   <para>
-        ///   The new instance provides secure connections if the scheme of
-        ///   <paramref name="url"/> is https.
-        ///   </para>
-        /// </remarks>
-        /// <param name="url">
-        /// A <see cref="string"/> that specifies the HTTP URL of the server.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="url"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="url"/> is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="url"/> is invalid.
-        ///   </para>
-        /// </exception>
+        /// <param name="url"></param>
         public HttpServer(string url)
         {
             if (url == null)
@@ -119,7 +61,7 @@ namespace Kogel.Net.WebSocket.Extension
             Uri uri;
             string msg;
 
-            if (!tryCreateUri(url, out uri, out msg))
+            if (!TryCreateUri(url, out uri, out msg))
                 throw new ArgumentException(msg, "url");
 
             var host = uri.GetDnsSafeHost(true);
@@ -139,28 +81,14 @@ namespace Kogel.Net.WebSocket.Extension
                 throw new ArgumentException(msg, "url");
             }
 
-            init(host, addr, uri.Port, uri.Scheme == "https");
+            Init(host, addr, uri.Port, uri.Scheme == "https");
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpServer"/> class with
-        /// the specified port and boolean if secure or not.
+        /// 使用指定的端口和布尔值（如果安全与否）初始化 <see cref="HttpServer"/> 类的新实例。
         /// </summary>
-        /// <remarks>
-        /// The new instance listens for incoming requests on
-        /// <see cref="System.Net.IPAddress.Any"/> and <paramref name="port"/>.
-        /// </remarks>
-        /// <param name="port">
-        /// An <see cref="int"/> that specifies the number of the port on which
-        /// to listen.
-        /// </param>
-        /// <param name="secure">
-        /// A <see cref="bool"/>: <c>true</c> if the new instance provides
-        /// secure connections; otherwise, <c>false</c>.
-        /// </param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="port"/> is less than 1 or greater than 65535.
-        /// </exception>
+        /// <param name="port"></param>
+        /// <param name="secure"></param>
         public HttpServer(int port, bool secure)
         {
             if (!port.IsPortNumber())
@@ -170,73 +98,25 @@ namespace Kogel.Net.WebSocket.Extension
                 throw new ArgumentOutOfRangeException("port", msg);
             }
 
-            init("*", System.Net.IPAddress.Any, port, secure);
+            Init("*", System.Net.IPAddress.Any, port, secure);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpServer"/> class with
-        /// the specified IP address and port.
+        /// 使用指定的 IP 地址和端口初始化 <see cref="HttpServer"/> 类的新实例
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   The new instance listens for incoming requests on
-        ///   <paramref name="address"/> and <paramref name="port"/>.
-        ///   </para>
-        ///   <para>
-        ///   It provides secure connections if <paramref name="port"/> is 443.
-        ///   </para>
-        /// </remarks>
-        /// <param name="address">
-        /// A <see cref="System.Net.IPAddress"/> that specifies the local IP
-        /// address on which to listen.
-        /// </param>
-        /// <param name="port">
-        /// An <see cref="int"/> that specifies the number of the port on which
-        /// to listen.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="address"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="address"/> is not a local IP address.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="port"/> is less than 1 or greater than 65535.
-        /// </exception>
+        /// <param name="address"></param>
+        /// <param name="port"></param>
         public HttpServer(System.Net.IPAddress address, int port)
           : this(address, port, port == 443)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpServer"/> class with
-        /// the specified IP address, port, and boolean if secure or not.
+        /// 使用指定的 IP 地址、端口和布尔值（如果安全与否）初始化 <see cref="HttpServer"/> 类的新实例
         /// </summary>
-        /// <remarks>
-        /// The new instance listens for incoming requests on
-        /// <paramref name="address"/> and <paramref name="port"/>.
-        /// </remarks>
-        /// <param name="address">
-        /// A <see cref="System.Net.IPAddress"/> that specifies the local IP
-        /// address on which to listen.
-        /// </param>
-        /// <param name="port">
-        /// An <see cref="int"/> that specifies the number of the port on which
-        /// to listen.
-        /// </param>
-        /// <param name="secure">
-        /// A <see cref="bool"/>: <c>true</c> if the new instance provides
-        /// secure connections; otherwise, <c>false</c>.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="address"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="address"/> is not a local IP address.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="port"/> is less than 1 or greater than 65535.
-        /// </exception>
+        /// <param name="address"></param>
+        /// <param name="port"></param>
+        /// <param name="secure"></param>
         public HttpServer(System.Net.IPAddress address, int port, bool secure)
         {
             if (address == null)
@@ -256,20 +136,12 @@ namespace Kogel.Net.WebSocket.Extension
                 throw new ArgumentOutOfRangeException("port", msg);
             }
 
-            init(address.ToString(true), address, port, secure);
+            Init(address.ToString(true), address, port, secure);
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
-        /// Gets the IP address of the server.
+        /// 获取服务器的IP地址
         /// </summary>
-        /// <value>
-        /// A <see cref="System.Net.IPAddress"/> that represents the local
-        /// IP address on which to listen for incoming requests.
-        /// </value>
         public System.Net.IPAddress Address
         {
             get
@@ -279,25 +151,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets or sets the scheme used to authenticate the clients.
+        /// 获取或设置用于验证客户端的方案
         /// </summary>
-        /// <remarks>
-        /// The set operation does nothing if the server has already
-        /// started or it is shutting down.
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   One of the <see cref="WebSocketSharp.Net.AuthenticationSchemes"/>
-        ///   enum values.
-        ///   </para>
-        ///   <para>
-        ///   It represents the scheme used to authenticate the clients.
-        ///   </para>
-        ///   <para>
-        ///   The default value is
-        ///   <see cref="WebSocketSharp.Net.AuthenticationSchemes.Anonymous"/>.
-        ///   </para>
-        /// </value>
         public AuthenticationSchemes AuthenticationSchemes
         {
             get
@@ -311,7 +166,7 @@ namespace Kogel.Net.WebSocket.Extension
                 {
                     string msg;
 
-                    if (!canSet(out msg))
+                    if (!CanSet(out msg))
                     {
                         Console.WriteLine(msg);
 
@@ -324,46 +179,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets or sets the path to the document folder of the server.
+        /// 获取或设置服务器文档文件夹的路径
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   '/' or '\' is trimmed from the end of the value if any.
-        ///   </para>
-        ///   <para>
-        ///   The set operation does nothing if the server has already
-        ///   started or it is shutting down.
-        ///   </para>
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="string"/> that represents a path to the folder
-        ///   from which to find the requested file.
-        ///   </para>
-        ///   <para>
-        ///   The default value is "./Public".
-        ///   </para>
-        /// </value>
-        /// <exception cref="ArgumentNullException">
-        /// The value specified for a set operation is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   The value specified for a set operation is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   The value specified for a set operation is an absolute root.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   The value specified for a set operation is an invalid path string.
-        ///   </para>
-        /// </exception>
         public string DocumentRootPath
         {
             get
@@ -413,7 +230,7 @@ namespace Kogel.Net.WebSocket.Extension
                 {
                     string msg;
 
-                    if (!canSet(out msg))
+                    if (!CanSet(out msg))
                     {
                         Console.WriteLine(msg);
 
@@ -426,11 +243,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets a value indicating whether the server has started.
+        /// 获取指示服务器是否已启动的值
         /// </summary>
-        /// <value>
-        /// <c>true</c> if the server has started; otherwise, <c>false</c>.
-        /// </value>
         public bool IsListening
         {
             get
@@ -440,12 +254,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets a value indicating whether secure connections are provided.
+        /// 获取指示是否提供安全连接的值
         /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance provides secure connections; otherwise,
-        /// <c>false</c>.
-        /// </value>
         public bool IsSecure
         {
             get
@@ -455,22 +265,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the server cleans up
-        /// the inactive sessions periodically.
+        /// 获取或设置一个值，该值指示服务器是否定期清理非活动会话
         /// </summary>
-        /// <remarks>
-        /// The set operation does nothing if the server has already
-        /// started or it is shutting down.
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if the server cleans up the inactive sessions
-        ///   every 60 seconds; otherwise, <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>true</c>.
-        ///   </para>
-        /// </value>
         public bool KeepClean
         {
             get
@@ -485,12 +281,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets the port of the server.
+        /// 获取服务器的端口
         /// </summary>
-        /// <value>
-        /// An <see cref="int"/> that represents the number of the port
-        /// on which to listen for incoming requests.
-        /// </value>
         public int Port
         {
             get
@@ -500,27 +292,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets or sets the realm used for authentication.
+        /// 获取或设置用于身份验证的领域
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   "SECRET AREA" is used as the realm if the value is
-        ///   <see langword="null"/> or an empty string.
-        ///   </para>
-        ///   <para>
-        ///   The set operation does nothing if the server has
-        ///   already started or it is shutting down.
-        ///   </para>
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="string"/> that represents the name of
-        ///   the realm or <see langword="null"/>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see langword="null"/>.
-        ///   </para>
-        /// </value>
         public string Realm
         {
             get
@@ -534,7 +307,7 @@ namespace Kogel.Net.WebSocket.Extension
                 {
                     string msg;
 
-                    if (!canSet(out msg))
+                    if (!CanSet(out msg))
                     {
                         Console.WriteLine(msg);
 
@@ -547,28 +320,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the server is allowed to
-        /// be bound to an address that is already in use.
+        /// 获取或设置一个值，该值指示是否允许将服务器绑定到已在使用的地址
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   You should set this property to <c>true</c> if you would
-        ///   like to resolve to wait for socket in TIME_WAIT state.
-        ///   </para>
-        ///   <para>
-        ///   The set operation does nothing if the server has already
-        ///   started or it is shutting down.
-        ///   </para>
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if the server is allowed to be bound to an address
-        ///   that is already in use; otherwise, <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>false</c>.
-        ///   </para>
-        /// </value>
         public bool ReuseAddress
         {
             get
@@ -582,7 +335,7 @@ namespace Kogel.Net.WebSocket.Extension
                 {
                     string msg;
 
-                    if (!canSet(out msg))
+                    if (!CanSet(out msg))
                     {
                         Console.WriteLine(msg);
 
@@ -595,19 +348,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets the configuration for secure connection.
+        /// 获取安全连接的配置
         /// </summary>
-        /// <remarks>
-        /// The configuration will be referenced when attempts to start,
-        /// so it must be configured before the start method is called.
-        /// </remarks>
-        /// <value>
-        /// A <see cref="ServerSslConfiguration"/> that represents
-        /// the configuration used to provide secure connections.
-        /// </value>
-        /// <exception cref="InvalidOperationException">
-        /// This server does not provide secure connections.
-        /// </exception>
         public ServerSslConfiguration SslConfiguration
         {
             get
@@ -624,34 +366,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets or sets the delegate used to find the credentials
-        /// for an identity.
+        /// 获取或设置用于查找身份凭据的委托
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   No credentials are found if the method invoked by
-        ///   the delegate returns <see langword="null"/> or
-        ///   the value is <see langword="null"/>.
-        ///   </para>
-        ///   <para>
-        ///   The set operation does nothing if the server has
-        ///   already started or it is shutting down.
-        ///   </para>
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   A <c>Func&lt;<see cref="IIdentity"/>,
-        ///   <see cref="NetworkCredential"/>&gt;</c> delegate or
-        ///   <see langword="null"/> if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called for finding
-        ///   the credentials used to authenticate a client.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see langword="null"/>.
-        ///   </para>
-        /// </value>
         public Func<IIdentity, NetworkCredential> UserCredentialsFinder
         {
             get
@@ -665,7 +381,7 @@ namespace Kogel.Net.WebSocket.Extension
                 {
                     string msg;
 
-                    if (!canSet(out msg))
+                    if (!CanSet(out msg))
                     {
                         Console.WriteLine(msg);
 
@@ -678,24 +394,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets or sets the time to wait for the response to the WebSocket
-        /// Ping or Close.
+        /// 获取或设置等待响应 WebSocket Ping 或 Close 的时间
         /// </summary>
-        /// <remarks>
-        /// The set operation does nothing if the server has already started or
-        /// it is shutting down.
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="TimeSpan"/> to wait for the response.
-        ///   </para>
-        ///   <para>
-        ///   The default value is the same as 1 second.
-        ///   </para>
-        /// </value>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The value specified for a set operation is zero or less.
-        /// </exception>
         public TimeSpan WaitTime
         {
             get
@@ -710,13 +410,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets the management function for the WebSocket services
-        /// provided by the server.
+        /// 获取服务器提供的WebSocket服务的管理函数
         /// </summary>
-        /// <value>
-        /// A <see cref="WebSocketServiceManager"/> that manages
-        /// the WebSocket services provided by the server.
-        /// </value>
         public WebSocketServiceManager WebSocketServices
         {
             get
@@ -725,55 +420,50 @@ namespace Kogel.Net.WebSocket.Extension
             }
         }
 
-        #endregion
-
-        #region Public Events
-
         /// <summary>
-        /// Occurs when the server receives an HTTP CONNECT request.
+        /// 当服务器收到 HTTP CONNECT 请求时发生.
         /// </summary>
         public event EventHandler<HttpRequestEventArgs> OnConnect;
 
         /// <summary>
-        /// Occurs when the server receives an HTTP DELETE request.
+        /// 当服务器收到 HTTP Delete 请求时发生
         /// </summary>
         public event EventHandler<HttpRequestEventArgs> OnDelete;
 
         /// <summary>
-        /// Occurs when the server receives an HTTP GET request.
+        /// 
         /// </summary>
         public event EventHandler<HttpRequestEventArgs> OnGet;
 
         /// <summary>
-        /// Occurs when the server receives an HTTP HEAD request.
+        /// 
         /// </summary>
         public event EventHandler<HttpRequestEventArgs> OnHead;
 
         /// <summary>
-        /// Occurs when the server receives an HTTP OPTIONS request.
+        /// 
         /// </summary>
         public event EventHandler<HttpRequestEventArgs> OnOptions;
 
         /// <summary>
-        /// Occurs when the server receives an HTTP POST request.
+        /// 
         /// </summary>
         public event EventHandler<HttpRequestEventArgs> OnPost;
 
         /// <summary>
-        /// Occurs when the server receives an HTTP PUT request.
+        /// 
         /// </summary>
         public event EventHandler<HttpRequestEventArgs> OnPut;
 
         /// <summary>
-        /// Occurs when the server receives an HTTP TRACE request.
+        /// 
         /// </summary>
         public event EventHandler<HttpRequestEventArgs> OnTrace;
 
-        #endregion
-
-        #region Private Methods
-
-        private void abort()
+        /// <summary>
+        /// 
+        /// </summary>
+        private void Abort()
         {
             lock (_sync)
             {
@@ -801,7 +491,12 @@ namespace Kogel.Net.WebSocket.Extension
             _state = ServerState.Stop;
         }
 
-        private bool canSet(out string message)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private bool CanSet(out string message)
         {
             message = null;
 
@@ -822,7 +517,7 @@ namespace Kogel.Net.WebSocket.Extension
             return true;
         }
 
-        private bool checkCertificate(out string message)
+        private bool CheckCertificate(out string message)
         {
             message = null;
 
@@ -852,7 +547,7 @@ namespace Kogel.Net.WebSocket.Extension
             return true;
         }
 
-        private static HttpListener createListener(
+        private static HttpListener CreateListener(
           string hostname, int port, bool secure
         )
         {
@@ -865,7 +560,14 @@ namespace Kogel.Net.WebSocket.Extension
             return lsnr;
         }
 
-        private void init(
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        /// <param name="hostname"></param>
+        /// <param name="address"></param>
+        /// <param name="port"></param>
+        /// <param name="secure"></param>
+        private void Init(
           string hostname, System.Net.IPAddress address, int port, bool secure
         )
         {
@@ -875,12 +577,16 @@ namespace Kogel.Net.WebSocket.Extension
             _secure = secure;
 
             _docRootPath = "./Public";
-            _listener = createListener(_hostname, _port, _secure);
+            _listener = CreateListener(_hostname, _port, _secure);
             _services = new WebSocketServiceManager();
             _sync = new object();
         }
 
-        private void processRequest(HttpListenerContext context)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        private void ProcessRequest(HttpListenerContext context)
         {
             var method = context.Request.HttpMethod;
             var evt = method == "GET"
@@ -909,7 +615,11 @@ namespace Kogel.Net.WebSocket.Extension
             context.Response.Close();
         }
 
-        private void processRequest(HttpListenerWebSocketContext context)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        private void ProcessRequest(HttpListenerWebSocketContext context)
         {
             var uri = context.RequestUri;
 
@@ -937,7 +647,10 @@ namespace Kogel.Net.WebSocket.Extension
             host.StartSession(context);
         }
 
-        private void receiveRequest()
+        /// <summary>
+        /// 接收请求
+        /// </summary>
+        private void ReceiveRequest()
         {
             while (true)
             {
@@ -948,23 +661,20 @@ namespace Kogel.Net.WebSocket.Extension
                     ctx = _listener.GetContext();
 
                     ThreadPool.QueueUserWorkItem(
-                      state => {
+                      state =>
+                      {
                           try
                           {
                               if (ctx.Request.IsUpgradeRequest("websocket"))
                               {
-                                  processRequest(ctx.GetWebSocketContext(null));
-
+                                  ProcessRequest(ctx.GetWebSocketContext(null));
                                   return;
                               }
-
-                              processRequest(ctx);
+                              ProcessRequest(ctx);
                           }
                           catch (Exception ex)
                           {
                               Console.WriteLine(ex.Message);
-                              Console.WriteLine(ex.ToString());
-
                               ctx.Connection.Close(true);
                           }
                       }
@@ -985,8 +695,6 @@ namespace Kogel.Net.WebSocket.Extension
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    Console.WriteLine(ex.ToString());
-
                     if (ctx != null)
                         ctx.Connection.Close(true);
 
@@ -995,10 +703,10 @@ namespace Kogel.Net.WebSocket.Extension
             }
 
             if (_state != ServerState.ShuttingDown)
-                abort();
+                Abort();
         }
 
-        private void start()
+        private void _Start()
         {
             lock (_sync)
             {
@@ -1020,7 +728,7 @@ namespace Kogel.Net.WebSocket.Extension
 
                 try
                 {
-                    startReceiving();
+                    StartReceiving();
                 }
                 catch
                 {
@@ -1033,7 +741,10 @@ namespace Kogel.Net.WebSocket.Extension
             }
         }
 
-        private void startReceiving()
+        /// <summary>
+        /// 启动接收
+        /// </summary>
+        private void StartReceiving()
         {
             try
             {
@@ -1046,13 +757,18 @@ namespace Kogel.Net.WebSocket.Extension
                 throw new InvalidOperationException(msg, ex);
             }
 
-            _receiveThread = new Thread(new ThreadStart(receiveRequest));
+            _receiveThread = new Thread(new ThreadStart(ReceiveRequest));
             _receiveThread.IsBackground = true;
 
             _receiveThread.Start();
         }
 
-        private void stop(ushort code, string reason)
+        /// <summary>
+        /// 停止
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="reason"></param>
+        private void Stop(ushort code, string reason)
         {
             lock (_sync)
             {
@@ -1091,7 +807,7 @@ namespace Kogel.Net.WebSocket.Extension
                 {
                     try
                     {
-                        stopReceiving(5000);
+                        StopReceiving(5000);
                     }
                     catch
                     {
@@ -1106,15 +822,24 @@ namespace Kogel.Net.WebSocket.Extension
             }
         }
 
-        private void stopReceiving(int millisecondsTimeout)
+        /// <summary>
+        /// 停止接收
+        /// </summary>
+        /// <param name="millisecondsTimeout"></param>
+        private void StopReceiving(int millisecondsTimeout)
         {
             _listener.Stop();
             _receiveThread.Join(millisecondsTimeout);
         }
 
-        private static bool tryCreateUri(
-          string uriString, out Uri result, out string message
-        )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uriString"></param>
+        /// <param name="result"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private static bool TryCreateUri(string uriString, out Uri result, out string message)
         {
             result = null;
             message = null;
@@ -1171,60 +896,11 @@ namespace Kogel.Net.WebSocket.Extension
             return true;
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
-        /// Adds a WebSocket service with the specified behavior and path.
+        /// 添加具有指定行为和路径的 WebSocket 服务
         /// </summary>
-        /// <param name="path">
-        ///   <para>
-        ///   A <see cref="string"/> that specifies an absolute path to
-        ///   the service to add.
-        ///   </para>
-        ///   <para>
-        ///   / is trimmed from the end of the string if present.
-        ///   </para>
-        /// </param>
-        /// <typeparam name="TBehavior">
-        ///   <para>
-        ///   The type of the behavior for the service.
-        ///   </para>
-        ///   <para>
-        ///   It must inherit the <see cref="WebSocketBehavior"/> class.
-        ///   </para>
-        ///   <para>
-        ///   And also, it must have a public parameterless constructor.
-        ///   </para>
-        /// </typeparam>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="path"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="path"/> is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> is not an absolute path.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> includes either or both
-        ///   query and fragment components.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> is already in use.
-        ///   </para>
-        /// </exception>
+        /// <typeparam name="TBehavior"></typeparam>
+        /// <param name="path"></param>
         public void AddWebSocketService<TBehavior>(string path)
           where TBehavior : WebSocketBehavior, new()
         {
@@ -1232,145 +908,37 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Adds a WebSocket service with the specified behavior, path,
-        /// and delegate.
+        /// 添加具有指定行为和路径的 WebSocket 服务
         /// </summary>
-        /// <param name="path">
-        ///   <para>
-        ///   A <see cref="string"/> that specifies an absolute path to
-        ///   the service to add.
-        ///   </para>
-        ///   <para>
-        ///   / is trimmed from the end of the string if present.
-        ///   </para>
-        /// </param>
-        /// <param name="initializer">
-        ///   <para>
-        ///   An <c>Action&lt;TBehavior&gt;</c> delegate or
-        ///   <see langword="null"/> if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when initializing
-        ///   a new session instance for the service.
-        ///   </para>
-        /// </param>
-        /// <typeparam name="TBehavior">
-        ///   <para>
-        ///   The type of the behavior for the service.
-        ///   </para>
-        ///   <para>
-        ///   It must inherit the <see cref="WebSocketBehavior"/> class.
-        ///   </para>
-        ///   <para>
-        ///   And also, it must have a public parameterless constructor.
-        ///   </para>
-        /// </typeparam>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="path"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="path"/> is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> is not an absolute path.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> includes either or both
-        ///   query and fragment components.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> is already in use.
-        ///   </para>
-        /// </exception>
-        public void AddWebSocketService<TBehavior>(
-          string path, Action<TBehavior> initializer
-        )
+        /// <typeparam name="TBehavior"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="initializer"></param>
+        public void AddWebSocketService<TBehavior>(string path, Action<TBehavior> initializer)
           where TBehavior : WebSocketBehavior, new()
         {
             _services.AddService<TBehavior>(path, initializer);
         }
 
         /// <summary>
-        /// Removes a WebSocket service with the specified path.
+        /// 移除具有指定行为和路径的 WebSocket 服务
         /// </summary>
-        /// <remarks>
-        /// The service is stopped with close status 1001 (going away)
-        /// if it has already started.
-        /// </remarks>
-        /// <returns>
-        /// <c>true</c> if the service is successfully found and removed;
-        /// otherwise, <c>false</c>.
-        /// </returns>
-        /// <param name="path">
-        ///   <para>
-        ///   A <see cref="string"/> that specifies an absolute path to
-        ///   the service to remove.
-        ///   </para>
-        ///   <para>
-        ///   / is trimmed from the end of the string if present.
-        ///   </para>
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="path"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="path"/> is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> is not an absolute path.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> includes either or both
-        ///   query and fragment components.
-        ///   </para>
-        /// </exception>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public bool RemoveWebSocketService(string path)
         {
             return _services.RemoveService(path);
         }
 
-        /// <summary>
-        /// Starts receiving incoming requests.
-        /// </summary>
-        /// <remarks>
-        /// This method does nothing if the server has already started or
-        /// it is shutting down.
-        /// </remarks>
-        /// <exception cref="InvalidOperationException">
-        ///   <para>
-        ///   There is no server certificate for secure connection.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   The underlying <see cref="HttpListener"/> has failed to start.
-        ///   </para>
-        /// </exception>
+       /// <summary>
+       /// 
+       /// </summary>
         public void Start()
         {
             if (_secure)
             {
                 string msg;
 
-                if (!checkCertificate(out msg))
+                if (!CheckCertificate(out msg))
                     throw new InvalidOperationException(msg);
             }
 
@@ -1388,16 +956,12 @@ namespace Kogel.Net.WebSocket.Extension
                 return;
             }
 
-            start();
+            _Start();
         }
 
         /// <summary>
-        /// Stops receiving incoming requests.
+        /// 止接收传入请求
         /// </summary>
-        /// <remarks>
-        /// This method does nothing if the server is not started,
-        /// it is shutting down, or it has already stopped.
-        /// </remarks>
         public void Stop()
         {
             if (_state == ServerState.Ready)
@@ -1421,9 +985,7 @@ namespace Kogel.Net.WebSocket.Extension
                 return;
             }
 
-            stop(1001, String.Empty);
+            Stop(1001, String.Empty);
         }
-
-        #endregion
     }
 }

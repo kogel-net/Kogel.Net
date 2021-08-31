@@ -17,8 +17,6 @@ namespace Kogel.Net.WebSocket.Server
     /// </summary>
     public class WebSocketSessionManager
     {
-        #region Private Fields
-
         private volatile bool _clean;
         private object _forSweep;
         private Dictionary<string, IWebSocketSession> _sessions;
@@ -27,10 +25,6 @@ namespace Kogel.Net.WebSocket.Server
         private System.Timers.Timer _sweepTimer;
         private object _sync;
         private TimeSpan _waitTime;
-
-        #endregion
-
-        #region Internal Constructors
 
         internal WebSocketSessionManager()
         {
@@ -44,10 +38,6 @@ namespace Kogel.Net.WebSocket.Server
             SetSweepTimer(60000);
         }
 
-        #endregion
-
-        #region Internal Properties
-
         internal ServerState State
         {
             get
@@ -56,22 +46,9 @@ namespace Kogel.Net.WebSocket.Server
             }
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
-        /// Gets the IDs for the active sessions in the WebSocket service.
+        /// 获取 WebSocket 服务中活动会话的 ID
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   An <c>IEnumerable&lt;string&gt;</c> instance.
-        ///   </para>
-        ///   <para>
-        ///   It provides an enumerator which supports the iteration over
-        ///   the collection of the IDs for the active sessions.
-        ///   </para>
-        /// </value>
         public IEnumerable<string> ActiveIDs
         {
             get
@@ -84,12 +61,7 @@ namespace Kogel.Net.WebSocket.Server
             }
         }
 
-        /// <summary>
-        /// Gets the number of the sessions in the WebSocket service.
-        /// </summary>
-        /// <value>
-        /// An <see cref="int"/> that represents the number of the sessions.
-        /// </value>
+        //获取 WebSocket 服务中的会话数
         public int Count
         {
             get
@@ -100,17 +72,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets the IDs for the sessions in the WebSocket service.
+        /// 获取 WebSocket 服务中会话的 ID
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   An <c>IEnumerable&lt;string&gt;</c> instance.
-        ///   </para>
-        ///   <para>
-        ///   It provides an enumerator which supports the iteration over
-        ///   the collection of the IDs for the sessions.
-        ///   </para>
-        /// </value>
         public IEnumerable<string> IDs
         {
             get
@@ -129,17 +92,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets the IDs for the inactive sessions in the WebSocket service.
+        /// 获取 WebSocket 服务中非活动会话的 ID
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   An <c>IEnumerable&lt;string&gt;</c> instance.
-        ///   </para>
-        ///   <para>
-        ///   It provides an enumerator which supports the iteration over
-        ///   the collection of the IDs for the inactive sessions.
-        ///   </para>
-        /// </value>
         public IEnumerable<string> InactiveIDs
         {
             get
@@ -175,24 +129,14 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the inactive sessions in
-        /// the WebSocket service are cleaned up periodically.
+        /// 获取或设置一个值，该值指示是否定期清理 WebSocket 服务中的非活动会话
         /// </summary>
-        /// <remarks>
-        /// The set operation does nothing if the service has already started or
-        /// it is shutting down.
-        /// </remarks>
-        /// <value>
-        /// <c>true</c> if the inactive sessions are cleaned up every 60 seconds;
-        /// otherwise, <c>false</c>.
-        /// </value>
         public bool KeepClean
         {
             get
             {
                 return _clean;
             }
-
             set
             {
                 string msg;
@@ -216,17 +160,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets the session instances in the WebSocket service.
+        /// 获取 WebSocket 服务中的会话实例
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   An <c>IEnumerable&lt;IWebSocketSession&gt;</c> instance.
-        ///   </para>
-        ///   <para>
-        ///   It provides an enumerator which supports the iteration over
-        ///   the collection of the session instances.
-        ///   </para>
-        /// </value>
         public IEnumerable<IWebSocketSession> Sessions
         {
             get
@@ -245,19 +180,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets or sets the time to wait for the response to the WebSocket Ping or
-        /// Close.
+        /// 获取或设置等待响应 WebSocket Ping 或 Close 的时间
         /// </summary>
-        /// <remarks>
-        /// The set operation does nothing if the service has already started or
-        /// it is shutting down.
-        /// </remarks>
-        /// <value>
-        /// A <see cref="TimeSpan"/> to wait for the response.
-        /// </value>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The value specified for a set operation is zero or less.
-        /// </exception>
         public TimeSpan WaitTime
         {
             get
@@ -289,10 +213,6 @@ namespace Kogel.Net.WebSocket.Server
                 }
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void _Broadcast(Opcode opcode, byte[] data, Action completed)
         {
@@ -454,11 +374,6 @@ namespace Kogel.Net.WebSocket.Server
                 return _sessions.TryGetValue(id, out session);
             }
         }
-
-        #endregion
-
-        #region Internal Methods
-
         internal string Add(IWebSocketSession session)
         {
             lock (_sync)
@@ -552,10 +467,6 @@ namespace Kogel.Net.WebSocket.Server
             Stop(new PayloadData(code, reason), !code.IsReserved());
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
         /// 向 WebSocket 服务中的每个客户端发送数据。
         /// </summary>
@@ -578,20 +489,9 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends <paramref name="data"/> to every client in the WebSocket service.
+        /// 向 WebSocket 服务中的每个客户端发送数据
         /// </summary>
-        /// <param name="data">
-        /// A <see cref="string"/> that represents the text data to send.
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the manager is not Start.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="data"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="data"/> could not be UTF-8-encoded.
-        /// </exception>
+        /// <param name="data"></param>
         public void Broadcast(string data)
         {
             if (_state != ServerState.Start)
@@ -617,41 +517,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends the data from <paramref name="stream"/> to every client in
-        /// the WebSocket service.
+        /// 将 data 中的数据发送到 WebSocket 服务中的每个客户端。
         /// </summary>
-        /// <remarks>
-        /// The data is sent as the binary data.
-        /// </remarks>
-        /// <param name="stream">
-        /// A <see cref="Stream"/> instance from which to read the data to send.
-        /// </param>
-        /// <param name="length">
-        /// An <see cref="int"/> that specifies the number of bytes to send.
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the manager is not Start.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="stream"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="stream"/> cannot be read.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="length"/> is less than 1.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   No data could be read from <paramref name="stream"/>.
-        ///   </para>
-        /// </exception>
+        /// <param name="stream"></param>
+        /// <param name="length"></param>
         public void Broadcast(Stream stream, int length)
         {
             if (_state != ServerState.Start)
@@ -701,30 +570,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends <paramref name="data"/> asynchronously to every client in
-        /// the WebSocket service.
+        /// 将 data 中的数据异步发送到 WebSocket 服务中的每个客户端。
         /// </summary>
-        /// <remarks>
-        /// This method does not wait for the send to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// An array of <see cref="byte"/> that represents the binary data to send.
-        /// </param>
-        /// <param name="completed">
-        ///   <para>
-        ///   An <see cref="Action"/> delegate or <see langword="null"/>
-        ///   if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when the send is complete.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the manager is not Start.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="data"/> is <see langword="null"/>.
-        /// </exception>
+        /// <param name="data"></param>
+        /// <param name="completed"></param>
         public void BroadcastAsync(byte[] data, Action completed)
         {
             if (_state != ServerState.Start)
@@ -743,33 +592,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends <paramref name="data"/> asynchronously to every client in
-        /// the WebSocket service.
+        /// 将 data 中的数据异步发送到 WebSocket 服务中的每个客户端。
         /// </summary>
-        /// <remarks>
-        /// This method does not wait for the send to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// A <see cref="string"/> that represents the text data to send.
-        /// </param>
-        /// <param name="completed">
-        ///   <para>
-        ///   An <see cref="Action"/> delegate or <see langword="null"/>
-        ///   if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when the send is complete.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the manager is not Start.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="data"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="data"/> could not be UTF-8-encoded.
-        /// </exception>
+        /// <param name="data"></param>
+        /// <param name="completed"></param>
         public void BroadcastAsync(string data, Action completed)
         {
             if (_state != ServerState.Start)
@@ -795,55 +621,11 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends the data from <paramref name="stream"/> asynchronously to
-        /// every client in the WebSocket service.
+        /// 将 data 中的数据异步发送到 WebSocket 服务中的每个客户端。
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   The data is sent as the binary data.
-        ///   </para>
-        ///   <para>
-        ///   This method does not wait for the send to be complete.
-        ///   </para>
-        /// </remarks>
-        /// <param name="stream">
-        /// A <see cref="Stream"/> instance from which to read the data to send.
-        /// </param>
-        /// <param name="length">
-        /// An <see cref="int"/> that specifies the number of bytes to send.
-        /// </param>
-        /// <param name="completed">
-        ///   <para>
-        ///   An <see cref="Action"/> delegate or <see langword="null"/>
-        ///   if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when the send is complete.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the manager is not Start.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="stream"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="stream"/> cannot be read.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="length"/> is less than 1.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   No data could be read from <paramref name="stream"/>.
-        ///   </para>
-        /// </exception>
+        /// <param name="stream"></param>
+        /// <param name="length"></param>
+        /// <param name="completed"></param>
         public void BroadcastAsync(Stream stream, int length, Action completed)
         {
             if (_state != ServerState.Start)
@@ -893,108 +675,9 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends a ping to every client in the WebSocket service.
+        /// 关闭指定的会话
         /// </summary>
-        /// <returns>
-        ///   <para>
-        ///   A <c>Dictionary&lt;string, bool&gt;</c>.
-        ///   </para>
-        ///   <para>
-        ///   It represents a collection of pairs of a session ID and
-        ///   a value indicating whether a pong has been received from
-        ///   the client within a time.
-        ///   </para>
-        /// </returns>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the manager is not Start.
-        /// </exception>
-        [Obsolete("This method will be removed.")]
-        public Dictionary<string, bool> Broadping()
-        {
-            if (_state != ServerState.Start)
-            {
-                var msg = "The current state of the manager is not Start.";
-                throw new InvalidOperationException(msg);
-            }
-
-            return Broadping(WebSocketFrame.EmptyPingBytes, _waitTime);
-        }
-
-        /// <summary>
-        /// Sends a ping with <paramref name="message"/> to every client in
-        /// the WebSocket service.
-        /// </summary>
-        /// <returns>
-        ///   <para>
-        ///   A <c>Dictionary&lt;string, bool&gt;</c>.
-        ///   </para>
-        ///   <para>
-        ///   It represents a collection of pairs of a session ID and
-        ///   a value indicating whether a pong has been received from
-        ///   the client within a time.
-        ///   </para>
-        /// </returns>
-        /// <param name="message">
-        ///   <para>
-        ///   A <see cref="string"/> that represents the message to send.
-        ///   </para>
-        ///   <para>
-        ///   The size must be 125 bytes or less in UTF-8.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the manager is not Start.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="message"/> could not be UTF-8-encoded.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The size of <paramref name="message"/> is greater than 125 bytes.
-        /// </exception>
-        [Obsolete("This method will be removed.")]
-        public Dictionary<string, bool> Broadping(string message)
-        {
-            if (_state != ServerState.Start)
-            {
-                var msg = "The current state of the manager is not Start.";
-                throw new InvalidOperationException(msg);
-            }
-
-            if (message.IsNullOrEmpty())
-                return Broadping(WebSocketFrame.EmptyPingBytes, _waitTime);
-
-            byte[] bytes;
-            if (!message.TryGetUTF8EncodedBytes(out bytes))
-            {
-                var msg = "It could not be UTF-8-encoded.";
-                throw new ArgumentException(msg, "message");
-            }
-
-            if (bytes.Length > 125)
-            {
-                var msg = "Its size is greater than 125 bytes.";
-                throw new ArgumentOutOfRangeException("message", msg);
-            }
-
-            var frame = WebSocketFrame.CreatePingFrame(bytes, false);
-            return Broadping(frame.ToArray(), _waitTime);
-        }
-
-        /// <summary>
-        /// Closes the specified session.
-        /// </summary>
-        /// <param name="id">
-        /// A <see cref="string"/> that represents the ID of the session to close.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="id"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="id"/> is an empty string.
-        /// </exception>
-        /// <exception cref="InvalidOperationException">
-        /// The session could not be found.
-        /// </exception>
+        /// <param name="id"></param>
         public void CloseSession(string id)
         {
             IWebSocketSession session;
@@ -1252,7 +935,5 @@ namespace Kogel.Net.WebSocket.Server
 
             return _TryGetSession(id, out session);
         }
-
-        #endregion
     }
 }

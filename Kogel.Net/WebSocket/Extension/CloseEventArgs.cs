@@ -8,42 +8,39 @@ using System.Threading.Tasks;
 namespace Kogel.Net.WebSocket.Extension
 {
     /// <summary>
-    /// 
+    /// 关闭事件
     /// </summary>
     public class CloseEventArgs : EventArgs
     {
-        #region Private Fields
-
         private bool _clean;
         private PayloadData _payloadData;
 
-        #endregion
-
-        #region Internal Constructors
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="payloadData"></param>
+        /// <param name="clean"></param>
         internal CloseEventArgs(PayloadData payloadData, bool clean)
         {
             _payloadData = payloadData;
             _clean = clean;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="reason"></param>
+        /// <param name="clean"></param>
         internal CloseEventArgs(ushort code, string reason, bool clean)
         {
             _payloadData = new PayloadData(code, reason);
             _clean = clean;
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
-        /// Gets the status code for the connection close.
+        /// 获取连接关闭的状态代码
         /// </summary>
-        /// <value>
-        /// A <see cref="ushort"/> that represents the status code for
-        /// the connection close if present.
-        /// </value>
         public ushort Code
         {
             get
@@ -53,12 +50,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets the reason for the connection close.
+        /// 获取连接关闭的原因
         /// </summary>
-        /// <value>
-        /// A <see cref="string"/> that represents the reason for
-        /// the connection close if present.
-        /// </value>
         public string Reason
         {
             get
@@ -68,12 +61,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets a value indicating whether the connection has been closed cleanly.
+        /// 获取一个值，该值指示连接是否已完全关闭
         /// </summary>
-        /// <value>
-        /// <c>true</c> if the connection has been closed cleanly; otherwise,
-        /// <c>false</c>.
-        /// </value>
         public bool WasClean
         {
             get
@@ -81,7 +70,5 @@ namespace Kogel.Net.WebSocket.Extension
                 return _clean;
             }
         }
-
-        #endregion
     }
 }
