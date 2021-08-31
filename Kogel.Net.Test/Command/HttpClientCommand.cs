@@ -16,11 +16,9 @@ namespace Kogel.Net.Test.Command
     public class HttpClientCommand : ICommand
     {
         IHttpClient httpClient;
-        IFileClient fileClient;
-        public HttpClientCommand(IHttpClient httpClient, IFileClient fileClient)
+        public HttpClientCommand(IHttpClient httpClient)
         {
             this.httpClient = httpClient;
-            this.fileClient = fileClient;
         }
 
         string accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOiIxNjI5OTQxNTM5IiwiZXhwIjoxNjMyNTMzNTM5LCJVc2VySWQiOiI0IiwiVXNlckNvZGUiOiJwZXRlciIsIlVzZXJOYW1lIjoicGV0ZXIiLCJHcm91cENvZGUiOiJBZG1pbiIsIkdyb3VwTmFtZSI6IueuoeeQhuWRmCIsImlzcyI6ImxvY2FsaG9zdCIsImF1ZCI6ImxvY2FsaG9zdCJ9.5KcKQYg0zq0ySo0CslcJB38fsMGVGhNcrRU1R-OM5Sc";
@@ -145,7 +143,7 @@ namespace Kogel.Net.Test.Command
             {
                 File.Delete(path);
             }
-            fileClient.Download("https://localhost:44370/files/abc.png", path);
+            httpClient.Download("https://localhost:44370/files/abc.png", path);
         }
 
         /// <summary>
@@ -154,7 +152,7 @@ namespace Kogel.Net.Test.Command
         private void Upload()
         {
             string path = $"{Directory.GetCurrentDirectory()}\\abc.png";
-            var resultResponse = fileClient.Upload("https://localhost:44370/api/file/uplpad?suffix=png", path, accessToken);
+            var resultResponse = httpClient.Upload("https://localhost:44370/api/file/uplpad?suffix=png", path, accessToken);
             Console.WriteLine(JsonConvert.SerializeObject(resultResponse));
         }
 

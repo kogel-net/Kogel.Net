@@ -113,5 +113,47 @@ namespace Kogel.Net.Http.Interfaces
         /// <param name="request"></param>
         /// <returns></returns>
         Task<KogelResponse> RequestAsync(KogelRequest request);
+
+        /// <summary>
+        /// 文件下载
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="path"></param>
+        /// <param name="authorizationMethod"></param>
+        /// <param name="authorizationToken"></param>
+        /// <param name="header"></param>
+        void Download(string url, string path, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null);
+
+        /// <summary>
+        /// 文件下载(异步)
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="path"></param>
+        /// <param name="authorizationMethod"></param>
+        /// <param name="authorizationToken"></param>
+        /// <param name="header"></param>
+        Task DownloadAsync(string url, string path, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null);
+
+        /// <summary>
+        /// 文件上传
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="path"></param>
+        /// <param name="authorizationToken"></param>
+        /// <param name="authorizationMethod"></param>
+        /// <param name="header"></param>
+        /// <returns></returns>
+        KogelResponse Upload(string url, string path, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null);
+
+        /// <summary>
+        /// 文件上传(异步)
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="path"></param>
+        /// <param name="authorizationToken"></param>
+        /// <param name="authorizationMethod"></param>
+        /// <param name="header"></param>
+        /// <returns></returns>
+        Task<KogelResponse> UploadAsync(string url, string path, string authorizationToken = null, string authorizationMethod = "Bearer", IDictionary<string, string> header = null);
     }
 }

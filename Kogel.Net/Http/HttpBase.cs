@@ -509,5 +509,30 @@ namespace Kogel.Net.Http
             }
             return webHeader;
         }
+
+        /// <summary>
+        /// 获取上次下载文件的位置（新增文件为0）
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="fileStream"></param>
+        /// <returns></returns>
+        public long GetStartPost(string path, out FileStream fileStream)
+        {
+            //打开上次下载的文件或新建文件 
+            long lStartPos = 0;
+            //另外如果文件已经下载完毕，就不需要再断点续传了，不然请求的range 会不合法会抛出异常。
+            if (File.Exists(path))
+            {
+                fileStream = File.OpenWrite(path);
+                lStartPos = fileStream.Length;
+                fileStream.Seek(lStartPos, SeekOrigin.Current); //移动文件流中的当前指针 
+            }
+            else
+            {
+                fileStream = new FileStream(path, FileMode.Create);
+                lStartPos = 0;
+            }
+            return lStartPos;
+        }
     }
 }

@@ -23,8 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <returns></returns>
         public static IServiceCollection AddKogelHttpClient(this IServiceCollection services)
         {
-            services.AddScoped<IHttpClient, HttpClient>();
-            services.AddScoped<IFileClient, FileClient>();
+            services.AddSingleton<IHttpClient, HttpClient>();
             return services;
         }
     }

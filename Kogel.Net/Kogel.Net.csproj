@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageId>Kogel.Net</PackageId>
-    <PackageTags>http;爬虫;远程请求;</PackageTags>
+    <PackageTags>http;爬虫;远程请求;websocket;长连接;</PackageTags>
     <Title>Kogel.Net</Title>
     <Description>
       官方文档见Demo
@@ -10,12 +10,12 @@
     </Description>
     <Authors>Kogel</Authors>
     <TargetFrameworks>net45;net451;netstandard2.0;netcoreapp2.1;netcoreapp3.1;</TargetFrameworks>
-    <AssemblyVersion>0.0.0.2</AssemblyVersion>
-    <FileVersion>0.0.0.2</FileVersion>
+    <AssemblyVersion>0.0.0.3</AssemblyVersion>
+    <FileVersion>0.0.0.3</FileVersion>
     <Company>Kogel.Net</Company>
     <Product>Kogel.Net</Product>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.0.0.2</Version>
+    <Version>0.0.0.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
