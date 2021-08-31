@@ -54,7 +54,7 @@ namespace Kogel.Net.Test.Command
         /// </summary>
         protected override void OnOpen()
         {
-            Console.WriteLine($"获取到一个请求,用户标识为:{this.ID}");
+            Console.WriteLine($"获取到一个请求,用户标识为:{this.Id}");
             base.OnOpen();
         }
 
@@ -66,7 +66,7 @@ namespace Kogel.Net.Test.Command
         {
             //消息内容
             var message = e.Data;
-            Console.WriteLine($"获取到一条消息,用户标识为:{this.ID},消息内容为:{message}");     
+            Console.WriteLine($"获取到一条消息,用户标识为:{this.Id},消息内容为:{message}");     
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Kogel.Net.Test.Command
         /// <param name="e"></param>
         protected override void OnError(ErrorEventArgs e)
         {
-            Console.WriteLine($"获取到一个异常,用户标识为:{this.ID}");
+            Console.WriteLine($"获取到一个异常,用户标识为:{this.Id}");
             base.OnError(e);
         }
 
@@ -85,7 +85,7 @@ namespace Kogel.Net.Test.Command
         /// <param name="e"></param>
         protected override void OnClose(CloseEventArgs e)
         {
-            Console.WriteLine($"获取到一个离线请求,用户标识为:{this.ID}");
+            Console.WriteLine($"获取到一个离线请求,用户标识为:{this.Id}");
             base.OnClose(e);
         }
     }

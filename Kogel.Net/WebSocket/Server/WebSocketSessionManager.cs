@@ -385,7 +385,7 @@ namespace Kogel.Net.WebSocket.Server
                 }
 
                 var res = session.Context.WebSocket.Ping(frameAsBytes, _waitTime);
-                ret.Add(session.ID, res);
+                ret.Add(session.Id, res);
             }
 
             return ret;
@@ -520,7 +520,7 @@ namespace Kogel.Net.WebSocket.Server
                 }
 
                 var res = session.Context.WebSocket.Ping(frameAsBytes, timeout);
-                ret.Add(session.ID, res);
+                ret.Add(session.Id, res);
             }
 
             return ret;

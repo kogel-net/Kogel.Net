@@ -18,8 +18,6 @@ namespace Kogel.Net.WebSocket.Server
     /// </summary>
     public abstract class WebSocketBehavior : IWebSocketSession
     {
-        #region Private Fields
-
         private WebSocketContext _context;
         private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
         private bool _emitOnPing;
@@ -31,33 +29,17 @@ namespace Kogel.Net.WebSocket.Server
         private DateTime _startTime;
         private WebSocket _websocket;
 
-        #endregion
-
-        #region Protected Constructors
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="WebSocketBehavior"/> class.
+        /// 
         /// </summary>
         protected WebSocketBehavior()
         {
             _startTime = DateTime.MaxValue;
         }
 
-        #endregion
-
-        #region Protected Properties
-
         /// <summary>
-        /// Gets the HTTP headers included in a WebSocket handshake request.
+        /// 获取包含在 WebSocket 握手请求中的 HTTP 标头
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="NameValueCollection"/> that contains the headers.
-        ///   </para>
-        ///   <para>
-        ///   <see langword="null"/> if the session has not started yet.
-        ///   </para>
-        /// </value>
         protected NameValueCollection Headers
         {
             get
@@ -67,20 +49,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets the query string included in a WebSocket handshake request.
+        /// 获取包含在 WebSocket 握手请求中的查询字符串
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="NameValueCollection"/> that contains the query
-        ///   parameters.
-        ///   </para>
-        ///   <para>
-        ///   An empty collection if not included.
-        ///   </para>
-        ///   <para>
-        ///   <see langword="null"/> if the session has not started yet.
-        ///   </para>
-        /// </value>
         protected NameValueCollection QueryString
         {
             get
@@ -90,17 +60,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets the management function for the sessions in the service.
+        /// 获取服务中会话的管理函数。
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="WebSocketSessionManager"/> that manages the sessions in
-        ///   the service.
-        ///   </para>
-        ///   <para>
-        ///   <see langword="null"/> if the session has not started yet.
-        ///   </para>
-        /// </value>
         protected WebSocketSessionManager Sessions
         {
             get
@@ -109,25 +70,9 @@ namespace Kogel.Net.WebSocket.Server
             }
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
-        /// Gets the current state of the WebSocket connection for a session.
+        /// 获取会话的 WebSocket 连接的当前状态。
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   One of the <see cref="WebSocketState"/> enum values.
-        ///   </para>
-        ///   <para>
-        ///   It indicates the current state of the connection.
-        ///   </para>
-        ///   <para>
-        ///   <see cref="WebSocketState.Connecting"/> if the session has not
-        ///   started yet.
-        ///   </para>
-        /// </value>
         public WebSocketState ConnectionState
         {
             get
@@ -139,17 +84,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets the information in a WebSocket handshake request to the service.
+        /// 获取服务的 WebSocket 握手请求中的信息。
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="WebSocketContext"/> instance that provides the access to
-        ///   the information in the handshake request.
-        ///   </para>
-        ///   <para>
-        ///   <see langword="null"/> if the session has not started yet.
-        ///   </para>
-        /// </value>
         public WebSocketContext Context
         {
             get
@@ -159,33 +95,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets or sets the delegate used to validate the HTTP cookies included in
-        /// a WebSocket handshake request to the service.
+        /// 获取或设置用于验证服务的 WebSocket 握手请求中包含的 HTTP cookie 的委托
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <c>Func&lt;CookieCollection, CookieCollection, bool&gt;</c> delegate
-        ///   or <see langword="null"/> if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when the WebSocket instance
-        ///   for a session validates the handshake request.
-        ///   </para>
-        ///   <para>
-        ///   1st <see cref="CookieCollection"/> parameter passed to the method
-        ///   contains the cookies to validate if present.
-        ///   </para>
-        ///   <para>
-        ///   2nd <see cref="CookieCollection"/> parameter passed to the method
-        ///   receives the cookies to send to the client.
-        ///   </para>
-        ///   <para>
-        ///   The method must return <c>true</c> if the cookies are valid.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see langword="null"/>.
-        ///   </para>
-        /// </value>
         public Func<CookieCollection, CookieCollection, bool> CookiesValidator
         {
             get
@@ -200,18 +111,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the WebSocket instance for
-        /// a session emits the message event when receives a ping.
+        /// 获取或设置一个值，该值指示会话的 WebSocket 实例在收到 ping 时是否发出消息事件
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if the WebSocket instance emits the message event
-        ///   when receives a ping; otherwise, <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>false</c>.
-        ///   </para>
-        /// </value>
         public bool EmitOnPing
         {
             get
@@ -232,17 +133,9 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets the unique ID of a session.
+        /// 获取会话的唯一 ID
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="string"/> that represents the unique ID of the session.
-        ///   </para>
-        ///   <para>
-        ///   <see langword="null"/> if the session has not started yet.
-        ///   </para>
-        /// </value>
-        public string ID
+        public string Id
         {
             get
             {
@@ -251,19 +144,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the service ignores
-        /// the Sec-WebSocket-Extensions header included in a WebSocket
-        /// handshake request.
+        /// 获取或设置一个值，该值指示服务是否忽略包含在 WebSocket 握手请求中的 Sec-WebSocket-Extensions 标头。
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if the service ignores the extensions requested
-        ///   from a client; otherwise, <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>false</c>.
-        ///   </para>
-        /// </value>
         public bool IgnoreExtensions
         {
             get
@@ -278,30 +160,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets or sets the delegate used to validate the Origin header included in
-        /// a WebSocket handshake request to the service.
+        /// 获取或设置用于验证对服务的 WebSocket 握手请求中包含的 Origin 标头的委托。
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <c>Func&lt;string, bool&gt;</c> delegate or <see langword="null"/>
-        ///   if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when the WebSocket instance
-        ///   for a session validates the handshake request.
-        ///   </para>
-        ///   <para>
-        ///   The <see cref="string"/> parameter passed to the method is the value
-        ///   of the Origin header or <see langword="null"/> if the header is not
-        ///   present.
-        ///   </para>
-        ///   <para>
-        ///   The method must return <c>true</c> if the header value is valid.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see langword="null"/>.
-        ///   </para>
-        /// </value>
         public Func<string, bool> OriginValidator
         {
             get
@@ -316,27 +176,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets or sets the name of the WebSocket subprotocol for the service.
+        /// 获取或设置服务的 WebSocket 子协议的名称。
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="string"/> that represents the name of the subprotocol.
-        ///   </para>
-        ///   <para>
-        ///   The value specified for a set must be a token defined in
-        ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
-        ///   RFC 2616</see>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is an empty string.
-        ///   </para>
-        /// </value>
-        /// <exception cref="InvalidOperationException">
-        /// The set operation is not available if the session has already started.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// The value specified for a set operation is not a token.
-        /// </exception>
         public string Protocol
         {
             get
@@ -368,17 +209,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Gets the time that a session has started.
+        /// 获取会话开始的时间。
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="DateTime"/> that represents the time that the session
-        ///   has started.
-        ///   </para>
-        ///   <para>
-        ///   <see cref="DateTime.MaxValue"/> if the session has not started yet.
-        ///   </para>
-        /// </value>
         public DateTime StartTime
         {
             get
@@ -387,11 +219,7 @@ namespace Kogel.Net.WebSocket.Server
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
-        private string checkHandshakeRequest(WebSocketContext context)
+        private string CheckHandshakeRequest(WebSocketContext context)
         {
             if (_originValidator != null)
             {
@@ -410,7 +238,12 @@ namespace Kogel.Net.WebSocket.Server
             return null;
         }
 
-        private void onClose(object sender, CloseEventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClose(object sender, CloseEventArgs e)
         {
             if (_id == null)
                 return;
@@ -419,17 +252,32 @@ namespace Kogel.Net.WebSocket.Server
             OnClose(e);
         }
 
-        private void onError(object sender, Kogel.Net.WebSocket.Extension.ErrorEventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnError(object sender, Kogel.Net.WebSocket.Extension.ErrorEventArgs e)
         {
             OnError(e);
         }
 
-        private void onMessage(object sender, MessageEventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnMessage(object sender, MessageEventArgs e)
         {
             OnMessage(e);
         }
 
-        private void onOpen(object sender, EventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnOpen(object sender, EventArgs e)
         {
             _id = _sessions.Add(this);
             if (_id == null)
@@ -442,10 +290,11 @@ namespace Kogel.Net.WebSocket.Server
             OnOpen();
         }
 
-        #endregion
-
-        #region Internal Methods
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="sessions"></param>
         internal void Start(WebSocketContext context, WebSocketSessionManager sessions)
         {
             if (_websocket != null)
@@ -460,7 +309,7 @@ namespace Kogel.Net.WebSocket.Server
             _sessions = sessions;
 
             _websocket = context.WebSocket;
-            _websocket.CustomHandshakeRequestChecker = checkHandshakeRequest;
+            _websocket.CustomHandshakeRequestChecker = CheckHandshakeRequest;
             _websocket.EmitOnPing = _emitOnPing;
             _websocket.IgnoreExtensions = _ignoreExtensions;
             _websocket.Protocol = _protocol;
@@ -469,28 +318,17 @@ namespace Kogel.Net.WebSocket.Server
             if (waitTime != _websocket.WaitTime)
                 _websocket.WaitTime = waitTime;
 
-            _websocket.OnOpen += onOpen;
-            _websocket.OnMessage += onMessage;
-            _websocket.OnError += onError;
-            _websocket.OnClose += onClose;
+            _websocket.OnOpen += OnOpen;
+            _websocket.OnMessage += OnMessage;
+            _websocket.OnError += OnError;
+            _websocket.OnClose += OnClose;
 
             _websocket.InternalAccept();
         }
 
-        #endregion
-
-        #region Protected Methods
-
         /// <summary>
-        /// Closes the WebSocket connection for a session.
+        /// 闭会话的 WebSocket 连接。
         /// </summary>
-        /// <remarks>
-        /// This method does nothing if the current state of the connection is
-        /// Closing or Closed.
-        /// </remarks>
-        /// <exception cref="InvalidOperationException">
-        /// The session has not started yet.
-        /// </exception>
         protected void Close()
         {
             if (_websocket == null)
@@ -503,63 +341,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Closes the WebSocket connection for a session with the specified
-        /// code and reason.
+        /// 使用指定的代码和原因关闭会话的 WebSocket 连接。
         /// </summary>
-        /// <remarks>
-        /// This method does nothing if the current state of the connection is
-        /// Closing or Closed.
-        /// </remarks>
-        /// <param name="code">
-        ///   <para>
-        ///   A <see cref="ushort"/> that represents the status code indicating
-        ///   the reason for the close.
-        ///   </para>
-        ///   <para>
-        ///   The status codes are defined in
-        ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
-        ///   Section 7.4</see> of RFC 6455.
-        ///   </para>
-        /// </param>
-        /// <param name="reason">
-        ///   <para>
-        ///   A <see cref="string"/> that represents the reason for the close.
-        ///   </para>
-        ///   <para>
-        ///   The size must be 123 bytes or less in UTF-8.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The session has not started yet.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///   <para>
-        ///   <paramref name="code"/> is less than 1000 or greater than 4999.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   The size of <paramref name="reason"/> is greater than 123 bytes.
-        ///   </para>
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="code"/> is 1010 (mandatory extension).
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="code"/> is 1005 (no status) and there is reason.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="reason"/> could not be UTF-8-encoded.
-        ///   </para>
-        /// </exception>
+        /// <param name="code"></param>
+        /// <param name="reason"></param>
         protected void Close(ushort code, string reason)
         {
             if (_websocket == null)
@@ -572,54 +357,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Closes the WebSocket connection for a session with the specified
-        /// code and reason.
+        /// 用指定的代码和原因关闭会话的 WebSocket 连接。
         /// </summary>
-        /// <remarks>
-        /// This method does nothing if the current state of the connection is
-        /// Closing or Closed.
-        /// </remarks>
-        /// <param name="code">
-        ///   <para>
-        ///   One of the <see cref="CloseStatusCode"/> enum values.
-        ///   </para>
-        ///   <para>
-        ///   It represents the status code indicating the reason for the close.
-        ///   </para>
-        /// </param>
-        /// <param name="reason">
-        ///   <para>
-        ///   A <see cref="string"/> that represents the reason for the close.
-        ///   </para>
-        ///   <para>
-        ///   The size must be 123 bytes or less in UTF-8.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The session has not started yet.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The size of <paramref name="reason"/> is greater than 123 bytes.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="code"/> is
-        ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="code"/> is
-        ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="reason"/> could not be UTF-8-encoded.
-        ///   </para>
-        /// </exception>
+        /// <param name="code"></param>
+        /// <param name="reason"></param>
         protected void Close(CloseStatusCode code, string reason)
         {
             if (_websocket == null)
@@ -632,20 +373,8 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Closes the WebSocket connection for a session asynchronously.
+        /// 异步关闭会话的 WebSocket 连接。
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   This method does not wait for the close to be complete.
-        ///   </para>
-        ///   <para>
-        ///   This method does nothing if the current state of the connection is
-        ///   Closing or Closed.
-        ///   </para>
-        /// </remarks>
-        /// <exception cref="InvalidOperationException">
-        /// The session has not started yet.
-        /// </exception>
         protected void CloseAsync()
         {
             if (_websocket == null)
@@ -658,68 +387,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Closes the WebSocket connection for a session asynchronously with
-        /// the specified code and reason.
+        /// 使用指定的代码和原因异步关闭会话的 WebSocket 连接。
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   This method does not wait for the close to be complete.
-        ///   </para>
-        ///   <para>
-        ///   This method does nothing if the current state of the connection is
-        ///   Closing or Closed.
-        ///   </para>
-        /// </remarks>
-        /// <param name="code">
-        ///   <para>
-        ///   A <see cref="ushort"/> that represents the status code indicating
-        ///   the reason for the close.
-        ///   </para>
-        ///   <para>
-        ///   The status codes are defined in
-        ///   <see href="http://tools.ietf.org/html/rfc6455#section-7.4">
-        ///   Section 7.4</see> of RFC 6455.
-        ///   </para>
-        /// </param>
-        /// <param name="reason">
-        ///   <para>
-        ///   A <see cref="string"/> that represents the reason for the close.
-        ///   </para>
-        ///   <para>
-        ///   The size must be 123 bytes or less in UTF-8.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The session has not started yet.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///   <para>
-        ///   <paramref name="code"/> is less than 1000 or greater than 4999.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   The size of <paramref name="reason"/> is greater than 123 bytes.
-        ///   </para>
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="code"/> is 1010 (mandatory extension).
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="code"/> is 1005 (no status) and there is reason.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="reason"/> could not be UTF-8-encoded.
-        ///   </para>
-        /// </exception>
+        /// <param name="code"></param>
+        /// <param name="reason"></param>
         protected void CloseAsync(ushort code, string reason)
         {
             if (_websocket == null)
@@ -732,59 +403,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Closes the WebSocket connection for a session asynchronously with
-        /// the specified code and reason.
+        /// 使用指定的代码和原因异步关闭会话的 WebSocket 连接。
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   This method does not wait for the close to be complete.
-        ///   </para>
-        ///   <para>
-        ///   This method does nothing if the current state of the connection is
-        ///   Closing or Closed.
-        ///   </para>
-        /// </remarks>
-        /// <param name="code">
-        ///   <para>
-        ///   One of the <see cref="CloseStatusCode"/> enum values.
-        ///   </para>
-        ///   <para>
-        ///   It represents the status code indicating the reason for the close.
-        ///   </para>
-        /// </param>
-        /// <param name="reason">
-        ///   <para>
-        ///   A <see cref="string"/> that represents the reason for the close.
-        ///   </para>
-        ///   <para>
-        ///   The size must be 123 bytes or less in UTF-8.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The session has not started yet.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="code"/> is
-        ///   <see cref="CloseStatusCode.MandatoryExtension"/>.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="code"/> is
-        ///   <see cref="CloseStatusCode.NoStatus"/> and there is reason.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="reason"/> could not be UTF-8-encoded.
-        ///   </para>
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// The size of <paramref name="reason"/> is greater than 123 bytes.
-        /// </exception>
+        /// <param name="code"></param>
+        /// <param name="reason"></param>
         protected void CloseAsync(CloseStatusCode code, string reason)
         {
             if (_websocket == null)
@@ -797,85 +419,40 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Calls the <see cref="OnError"/> method with the specified message.
+        /// 当会话的 WebSocket 连接关闭时调用。
         /// </summary>
-        /// <param name="message">
-        /// A <see cref="string"/> that represents the error message.
-        /// </param>
-        /// <param name="exception">
-        /// An <see cref="Exception"/> instance that represents the cause of
-        /// the error if present.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="message"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="message"/> is an empty string.
-        /// </exception>
-        [Obsolete("This method will be removed.")]
-        protected void Error(string message, Exception exception)
-        {
-            if (message == null)
-                throw new ArgumentNullException("message");
-
-            if (message.Length == 0)
-                throw new ArgumentException("An empty string.", "message");
-
-            OnError(new Kogel.Net.WebSocket.Extension.ErrorEventArgs(message, exception));
-        }
-
-        /// <summary>
-        /// Called when the WebSocket connection for a session has been closed.
-        /// </summary>
-        /// <param name="e">
-        /// A <see cref="CloseEventArgs"/> that represents the event data passed
-        /// from a <see cref="WebSocket.OnClose"/> event.
-        /// </param>
+        /// <param name="e"></param>
         protected virtual void OnClose(CloseEventArgs e)
         {
         }
 
         /// <summary>
-        /// Called when the WebSocket instance for a session gets an error.
+        /// 当会话的 WebSocket 实例出错时调用。
         /// </summary>
-        /// <param name="e">
-        /// A <see cref="ErrorEventArgs"/> that represents the event data passed
-        /// from a <see cref="WebSocket.OnError"/> event.
-        /// </param>
+        /// <param name="e"></param>
         protected virtual void OnError(Kogel.Net.WebSocket.Extension.ErrorEventArgs e)
         {
         }
 
         /// <summary>
-        /// Called when the WebSocket instance for a session receives a message.
+        /// 当会话的 WebSocket 实例收到消息时调用。
         /// </summary>
-        /// <param name="e">
-        /// A <see cref="MessageEventArgs"/> that represents the event data passed
-        /// from a <see cref="WebSocket.OnMessage"/> event.
-        /// </param>
+        /// <param name="e"></param>
         protected virtual void OnMessage(MessageEventArgs e)
         {
         }
 
         /// <summary>
-        /// Called when the WebSocket connection for a session has been established.
+        /// 在为会话建立 WebSocket 连接时调用。
         /// </summary>
         protected virtual void OnOpen()
         {
         }
 
         /// <summary>
-        /// Sends the specified data to a client using the WebSocket connection.
+        /// 使用 WebSocket 连接将指定数据发送到客户端。
         /// </summary>
-        /// <param name="data">
-        /// An array of <see cref="byte"/> that represents the binary data to send.
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the connection is not Open.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="data"/> is <see langword="null"/>.
-        /// </exception>
+        /// <param name="data"></param>
         protected void Send(byte[] data)
         {
             if (_websocket == null)
@@ -888,33 +465,9 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends the specified file to a client using the WebSocket connection.
+        /// 使用 WebSocket 连接将指定文件发送到客户端
         /// </summary>
-        /// <param name="fileInfo">
-        ///   <para>
-        ///   A <see cref="FileInfo"/> that specifies the file to send.
-        ///   </para>
-        ///   <para>
-        ///   The file is sent as the binary data.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the connection is not Open.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="fileInfo"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   The file does not exist.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   The file could not be opened.
-        ///   </para>
-        /// </exception>
+        /// <param name="fileInfo"></param>
         protected void Send(FileInfo fileInfo)
         {
             if (_websocket == null)
@@ -927,20 +480,9 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends the specified data to a client using the WebSocket connection.
+        /// 使用 WebSocket 连接将指定数据发送到客户端。
         /// </summary>
-        /// <param name="data">
-        /// A <see cref="string"/> that represents the text data to send.
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the connection is not Open.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="data"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="data"/> could not be UTF-8-encoded.
-        /// </exception>
+        /// <param name="data"></param>
         protected void Send(string data)
         {
             if (_websocket == null)
@@ -953,43 +495,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends the data from the specified stream to a client using
-        /// the WebSocket connection.
+        /// 使用指定的流将数据发送到客户端
         /// </summary>
-        /// <param name="stream">
-        ///   <para>
-        ///   A <see cref="Stream"/> instance from which to read the data to send.
-        ///   </para>
-        ///   <para>
-        ///   The data is sent as the binary data.
-        ///   </para>
-        /// </param>
-        /// <param name="length">
-        /// An <see cref="int"/> that specifies the number of bytes to send.
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the connection is not Open.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="stream"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="stream"/> cannot be read.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="length"/> is less than 1.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   No data could be read from <paramref name="stream"/>.
-        ///   </para>
-        /// </exception>
+        /// <param name="stream"></param>
+        /// <param name="length"></param>
         protected void Send(Stream stream, int length)
         {
             if (_websocket == null)
@@ -1002,34 +511,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends the specified data to a client asynchronously using
-        /// the WebSocket connection.
+        /// 使用 WebSocket 连接将指定数据异步发送到客户端。
         /// </summary>
-        /// <remarks>
-        /// This method does not wait for the send to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// An array of <see cref="byte"/> that represents the binary data to send.
-        /// </param>
-        /// <param name="completed">
-        ///   <para>
-        ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
-        ///   if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when the send is complete.
-        ///   </para>
-        ///   <para>
-        ///   <c>true</c> is passed to the method if the send has done with
-        ///   no error; otherwise, <c>false</c>.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the connection is not Open.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="data"/> is <see langword="null"/>.
-        /// </exception>
+        /// <param name="data"></param>
+        /// <param name="completed"></param>
         protected void SendAsync(byte[] data, Action<bool> completed)
         {
             if (_websocket == null)
@@ -1042,50 +527,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends the specified file to a client asynchronously using
-        /// the WebSocket connection.
+        /// 使用 WebSocket 连接将指定文件异步发送到客户端。
         /// </summary>
-        /// <remarks>
-        /// This method does not wait for the send to be complete.
-        /// </remarks>
-        /// <param name="fileInfo">
-        ///   <para>
-        ///   A <see cref="FileInfo"/> that specifies the file to send.
-        ///   </para>
-        ///   <para>
-        ///   The file is sent as the binary data.
-        ///   </para>
-        /// </param>
-        /// <param name="completed">
-        ///   <para>
-        ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
-        ///   if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when the send is complete.
-        ///   </para>
-        ///   <para>
-        ///   <c>true</c> is passed to the method if the send has done with
-        ///   no error; otherwise, <c>false</c>.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the connection is not Open.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="fileInfo"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   The file does not exist.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   The file could not be opened.
-        ///   </para>
-        /// </exception>
+        /// <param name="fileInfo"></param>
+        /// <param name="completed"></param>
         protected void SendAsync(FileInfo fileInfo, Action<bool> completed)
         {
             if (_websocket == null)
@@ -1098,37 +543,10 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends the specified data to a client asynchronously using
-        /// the WebSocket connection.
+        /// 使用 WebSocket 连接将指定数据异步发送到客户端。
         /// </summary>
-        /// <remarks>
-        /// This method does not wait for the send to be complete.
-        /// </remarks>
-        /// <param name="data">
-        /// A <see cref="string"/> that represents the text data to send.
-        /// </param>
-        /// <param name="completed">
-        ///   <para>
-        ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
-        ///   if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when the send is complete.
-        ///   </para>
-        ///   <para>
-        ///   <c>true</c> is passed to the method if the send has done with
-        ///   no error; otherwise, <c>false</c>.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the connection is not Open.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="data"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="data"/> could not be UTF-8-encoded.
-        /// </exception>
+        /// <param name="data"></param>
+        /// <param name="completed"></param>
         protected void SendAsync(string data, Action<bool> completed)
         {
             if (_websocket == null)
@@ -1141,59 +559,11 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         /// <summary>
-        /// Sends the data from the specified stream to a client asynchronously
-        /// using the WebSocket connection.
+        /// 使用 WebSocket 连接将数据从指定流异步发送到客户端。
         /// </summary>
-        /// <remarks>
-        /// This method does not wait for the send to be complete.
-        /// </remarks>
-        /// <param name="stream">
-        ///   <para>
-        ///   A <see cref="Stream"/> instance from which to read the data to send.
-        ///   </para>
-        ///   <para>
-        ///   The data is sent as the binary data.
-        ///   </para>
-        /// </param>
-        /// <param name="length">
-        /// An <see cref="int"/> that specifies the number of bytes to send.
-        /// </param>
-        /// <param name="completed">
-        ///   <para>
-        ///   An <c>Action&lt;bool&gt;</c> delegate or <see langword="null"/>
-        ///   if not needed.
-        ///   </para>
-        ///   <para>
-        ///   The delegate invokes the method called when the send is complete.
-        ///   </para>
-        ///   <para>
-        ///   <c>true</c> is passed to the method if the send has done with
-        ///   no error; otherwise, <c>false</c>.
-        ///   </para>
-        /// </param>
-        /// <exception cref="InvalidOperationException">
-        /// The current state of the connection is not Open.
-        /// </exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="stream"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="stream"/> cannot be read.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="length"/> is less than 1.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   No data could be read from <paramref name="stream"/>.
-        ///   </para>
-        /// </exception>
+        /// <param name="stream"></param>
+        /// <param name="length"></param>
+        /// <param name="completed"></param>
         protected void SendAsync(Stream stream, int length, Action<bool> completed)
         {
             if (_websocket == null)
@@ -1204,7 +574,5 @@ namespace Kogel.Net.WebSocket.Server
 
             _websocket.SendAsync(stream, length, completed);
         }
-
-        #endregion
     }
 }
