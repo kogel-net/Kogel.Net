@@ -32,9 +32,23 @@ namespace Kogel.Net.Test.Command
         {
             //aop监听请求(只会作用于当前上下文)
             //执行前
-            HttpBase.Aop.OnExecuting += Aop_OnExecuting;
+            HttpBase.Aop.OnExecuting += (KogelRequest request) =>
+            {
+                //请求的url
+                var url = request.Url;
+                //请求的参数
+                var param = request.PostDataByte;
+                //其他HttpWebRequest参数基本都有
+            };
             //执行后
-            HttpBase.Aop.OnExecuted += Aop_OnExecuted;
+            HttpBase.Aop.OnExecuted += (KogelRequest request) =>
+            {
+                //请求的url
+                var url = request.Url;
+                //请求的参数
+                var param = request.PostDataByte;
+                //其他HttpWebRequest参数基本都有
+            };
 
             //get请求
             Get();

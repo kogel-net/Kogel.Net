@@ -11,7 +11,7 @@ namespace Kogel.Net.Test
         {
             BuilHost();
             var provider = Services.BuildServiceProvider();
-            ICommand command = provider.GetService<HttpClientCommand>();
+            ICommand command = provider.GetService<WebSocketServerCommand>();
             command.Start();
         }
 
@@ -26,6 +26,8 @@ namespace Kogel.Net.Test
               {
                   services.AddKogelHttpClient();
                   services.AddTransient<HttpClientCommand>();
+                  services.AddTransient<WebSocketServerCommand>();
+                  services.AddTransient<WebSocketClientCommand>();
                   Services = services;
               })
               .UseConsoleLifetime()
