@@ -316,7 +316,7 @@ namespace Kogel.Net.WebSocket.Extension.Net.WebSockets
     /// the client and server.
     /// </summary>
     /// <value>
-    /// A <see cref="WebSocketSharp.WebSocket"/>.
+    /// A <see cref="WebSocket"/>.
     /// </value>
     public override WebSocket WebSocket {
       get {

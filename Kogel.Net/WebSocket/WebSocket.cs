@@ -294,7 +294,7 @@ namespace Kogel.Net.WebSocket
         /// </summary>
         /// <value>
         ///   <para>
-        ///   An <see cref="T:System.Collections.Generic.IEnumerable{WebSocketSharp.Net.Cookie}"/>
+        ///   An <see cref="T:System.Collections.Generic.IEnumerable{Net.Cookie}"/>
         ///   instance.
         ///   </para>
         ///   <para>
