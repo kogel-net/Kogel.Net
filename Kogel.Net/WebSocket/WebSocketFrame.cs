@@ -11,10 +11,11 @@ using Kogel.Net.WebSocket.Extension;
 
 namespace Kogel.Net.WebSocket
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class WebSocketFrame : IEnumerable<byte>
     {
-    
-
         private byte[] _extPayloadLength;
         private Fin _fin;
         private Mask _mask;
@@ -26,40 +27,19 @@ namespace Kogel.Net.WebSocket
         private Rsv _rsv2;
         private Rsv _rsv3;
 
-        
-
-        
-
         /// <summary>
-        /// Represents the ping frame without the payload data as an array of
-        /// <see cref="byte"/>.
+        /// 将没有负载数据的ping帧表示为<see cref="byte"/>的数组
         /// </summary>
-        /// <remarks>
-        /// The value of this field is created from a non masked ping frame,
-        /// so it can only be used to send a ping from the server.
-        /// </remarks>
         internal static readonly byte[] EmptyPingBytes;
-
-        
-
-        
 
         static WebSocketFrame()
         {
             EmptyPingBytes = CreatePingFrame(false).ToArray();
         }
 
-        
-
-        
-
         private WebSocketFrame()
         {
         }
-
-        
-
-        
 
         internal WebSocketFrame(Opcode opcode, PayloadData payloadData, bool mask)
           : this(Fin.Final, opcode, payloadData, false, mask)
@@ -120,10 +100,6 @@ namespace Kogel.Net.WebSocket
             _payloadData = payloadData;
         }
 
-        
-
-       
-
         internal ulong ExactPayloadLength
         {
             get
@@ -147,10 +123,6 @@ namespace Kogel.Net.WebSocket
                          : 8;
             }
         }
-
-        
-
-        
 
         public byte[] ExtendedPayloadLength
         {
@@ -337,10 +309,6 @@ namespace Kogel.Net.WebSocket
                 return _rsv3;
             }
         }
-
-        
-
-        
 
         private static byte[] createMaskingKey()
         {
@@ -785,10 +753,6 @@ Extended Payload Length: {7}
             }
         }
 
-        
-
-        
-
         internal static WebSocketFrame CreateCloseFrame(
           PayloadData payloadData, bool mask
         )
@@ -882,10 +846,6 @@ Extended Payload Length: {7}
             _maskingKey = WebSocket.EmptyBytes;
         }
 
-        
-
-        
-
         public IEnumerator<byte> GetEnumerator()
         {
             foreach (var b in ToArray())
@@ -944,15 +904,9 @@ Extended Payload Length: {7}
             return BitConverter.ToString(ToArray());
         }
 
-        
-
-       
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-
-        
     }
 }

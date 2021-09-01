@@ -16,10 +16,11 @@ using System.Threading.Tasks;
 
 namespace Kogel.Net.WebSocket
 {
+    /// <summary>
+    /// 长连接对象
+    /// </summary>
     public class WebSocket : IDisposable
     {
-    
-
         private AuthenticationChallenge _authChallenge;
         private string _base64Key;
         private bool _client;
@@ -66,37 +67,21 @@ namespace Kogel.Net.WebSocket
         private Uri _uri;
         private const string _version = "13";
         private TimeSpan _waitTime;
-        
-
-        
 
         /// <summary>
-        /// Represents the empty array of <see cref="byte"/> used internally.
+        /// 表示内部使用的 <see cref="byte"/> 的空数组
         /// </summary>
         internal static readonly byte[] EmptyBytes;
 
         /// <summary>
-        /// Represents the length used to determine whether the data should be fragmented in sending.
+        /// 表示用于确定发送时数据是否应该分片的长度
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   The data will be fragmented if that length is greater than the value of this field.
-        ///   </para>
-        ///   <para>
-        ///   If you would like to change the value, you must set it to a value between <c>125</c> and
-        ///   <c>Int32.MaxValue - 14</c> inclusive.
-        ///   </para>
-        /// </remarks>
         internal static readonly int FragmentLength;
 
         /// <summary>
-        /// Represents the random number generator used internally.
+        /// 代表内部使用的随机数生成器
         /// </summary>
         internal static readonly RandomNumberGenerator RandomNumber;
-
-        
-
-        
 
         static WebSocket()
         {
@@ -106,11 +91,6 @@ namespace Kogel.Net.WebSocket
             RandomNumber = new RNGCryptoServiceProvider();
         }
 
-        
-
-        
-
-        // As server
         internal WebSocket(HttpListenerWebSocketContext context, string protocol)
         {
             _context = context;
@@ -124,7 +104,6 @@ namespace Kogel.Net.WebSocket
             Init();
         }
 
-        // As server
         internal WebSocket(TcpListenerWebSocketContext context, string protocol)
         {
             _context = context;
@@ -138,10 +117,6 @@ namespace Kogel.Net.WebSocket
 
             Init();
         }
-
-        
-
-    
 
         /// <summary>
         /// 
@@ -177,10 +152,6 @@ namespace Kogel.Net.WebSocket
             Init();
         }
 
-        
-
-       
-
         internal CookieCollection CookieCollection
         {
             get
@@ -189,7 +160,6 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        // As server
         internal Func<WebSocketContext, string> CustomHandshakeRequestChecker
         {
             get
@@ -212,7 +182,6 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        // As server
         internal bool IgnoreExtensions
         {
             get
@@ -234,31 +203,9 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        
-
-        
-
         /// <summary>
-        /// Gets or sets the compression method used to compress a message.
+        /// 获取或设置用于压缩消息的压缩方法
         /// </summary>
-        /// <remarks>
-        /// The set operation does nothing if the connection has already been
-        /// established or it is closing.
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   One of the <see cref="CompressionMethod"/> enum values.
-        ///   </para>
-        ///   <para>
-        ///   It specifies the compression method used to compress a message.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see cref="CompressionMethod.None"/>.
-        ///   </para>
-        /// </value>
-        /// <exception cref="InvalidOperationException">
-        /// The set operation is not available if this instance is not a client.
-        /// </exception>
         public CompressionMethod Compression
         {
             get
@@ -276,7 +223,6 @@ namespace Kogel.Net.WebSocket
                     throw new InvalidOperationException(msg);
                 }
 
-
                 lock (_forState)
                 {
                     if (!CanSet(out msg))
@@ -290,18 +236,8 @@ namespace Kogel.Net.WebSocket
         }
 
         /// <summary>
-        /// Gets the HTTP cookies included in the handshake request/response.
+        /// 获取包含在握手请求/响应中的 HTTP cookie
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   An <see cref="T:System.Collections.Generic.IEnumerable{Net.Cookie}"/>
-        ///   instance.
-        ///   </para>
-        ///   <para>
-        ///   It provides an enumerator which supports the iteration over
-        ///   the collection of the cookies.
-        ///   </para>
-        /// </value>
         public IEnumerable<Cookie> Cookies
         {
             get
@@ -315,17 +251,8 @@ namespace Kogel.Net.WebSocket
         }
 
         /// <summary>
-        /// Gets the credentials for the HTTP authentication (Basic/Digest).
+        /// 获取包含在握手请求/响应中的 HTTP cookie
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="NetworkCredential"/> that represents the credentials
-        ///   used to authenticate the client.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see langword="null"/>.
-        ///   </para>
-        /// </value>
         public NetworkCredential Credentials
         {
             get
@@ -335,18 +262,8 @@ namespace Kogel.Net.WebSocket
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether a <see cref="OnMessage"/> event
-        /// is emitted when a ping is received.
+        /// 
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if this instance emits a <see cref="OnMessage"/> event
-        ///   when receives a ping; otherwise, <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>false</c>.
-        ///   </para>
-        /// </value>
         public bool EmitOnPing
         {
             get
@@ -361,25 +278,8 @@ namespace Kogel.Net.WebSocket
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the URL redirection for
-        /// the handshake request is allowed.
+        /// 
         /// </summary>
-        /// <remarks>
-        /// The set operation does nothing if the connection has already been
-        /// established or it is closing.
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if this instance allows the URL redirection for
-        ///   the handshake request; otherwise, <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>false</c>.
-        ///   </para>
-        /// </value>
-        /// <exception cref="InvalidOperationException">
-        /// The set operation is not available if this instance is not a client.
-        /// </exception>
         public bool EnableRedirection
         {
             get
@@ -415,13 +315,8 @@ namespace Kogel.Net.WebSocket
         }
 
         /// <summary>
-        /// Gets the extensions selected by server.
+        /// 获取服务器选择的扩展
         /// </summary>
-        /// <value>
-        /// A <see cref="string"/> that will be a list of the extensions
-        /// negotiated between client and server, or an empty string if
-        /// not specified or selected.
-        /// </value>
         public string Extensions
         {
             get
@@ -431,15 +326,8 @@ namespace Kogel.Net.WebSocket
         }
 
         /// <summary>
-        /// Gets a value indicating whether the connection is alive.
+        /// 获取一个值，该值指示连接是否处于活动状态
         /// </summary>
-        /// <remarks>
-        /// The get operation returns the value by using a ping/pong
-        /// if the current state of the connection is Open.
-        /// </remarks>
-        /// <value>
-        /// <c>true</c> if the connection is alive; otherwise, <c>false</c>.
-        /// </value>
         public bool IsAlive
         {
             get
@@ -449,12 +337,8 @@ namespace Kogel.Net.WebSocket
         }
 
         /// <summary>
-        /// Gets a value indicating whether a secure connection is used.
+        /// 获取指示是否使用安全连接的值
         /// </summary>
-        /// <value>
-        /// <c>true</c> if this instance uses a secure connection; otherwise,
-        /// <c>false</c>.
-        /// </value>
         public bool IsSecure
         {
             get
@@ -610,32 +494,31 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        
+
         /// <summary>
-        /// Occurs when the WebSocket connection has been closed.
+        /// 当 WebSocket 连接关闭时发生
         /// </summary>
         public event EventHandler<CloseEventArgs> OnClose;
 
         /// <summary>
-        /// Occurs when the <see cref="WebSocket"/> gets an error.
+        /// 当 WebSocket 连接异常时发生
         /// </summary>
         public event EventHandler<Kogel.Net.WebSocket.Extension.ErrorEventArgs> OnError;
 
         /// <summary>
-        /// Occurs when the <see cref="WebSocket"/> receives a message.
+        /// 当 WebSocket 连接接收到消息时发生
         /// </summary>
         public event EventHandler<MessageEventArgs> OnMessage;
 
         /// <summary>
-        /// Occurs when the WebSocket connection has been established.
+        /// 当 WebSocket 连接打开时发生
         /// </summary>
         public event EventHandler OnOpen;
 
-        
-
-        
-
-        // As server
+        /// <summary>
+        /// 接受服务器
+        /// </summary>
+        /// <returns></returns>
         private bool Accept()
         {
             if (_readyState == WebSocketState.Open)
@@ -692,7 +575,10 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        // As server
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private bool AcceptHandshake()
         {
 
@@ -734,6 +620,11 @@ namespace Kogel.Net.WebSocket
             return sendHttpResponse(CreateHandshakeResponse());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         private bool CanSet(out string message)
         {
             message = null;
@@ -753,10 +644,13 @@ namespace Kogel.Net.WebSocket
             return true;
         }
 
-        // As server
-        private bool CheckHandshakeRequest(
-          WebSocketContext context, out string message
-        )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private bool CheckHandshakeRequest(WebSocketContext context, out string message)
         {
             message = null;
 
@@ -820,7 +714,12 @@ namespace Kogel.Net.WebSocket
             return true;
         }
 
-        // As client
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         private bool CheckHandshakeResponse(HttpResponse response, out string message)
         {
             message = null;
@@ -871,6 +770,12 @@ namespace Kogel.Net.WebSocket
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="protocols"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         private static bool CheckProtocols(string[] protocols, out string message)
         {
             message = null;
@@ -893,6 +798,12 @@ namespace Kogel.Net.WebSocket
             return true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="frame"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         private bool CheckReceivedFrame(WebSocketFrame frame, out string message)
         {
             message = null;
@@ -959,9 +870,7 @@ namespace Kogel.Net.WebSocket
             Close(new PayloadData(code, reason), send, send, false);
         }
 
-        private void Close(
-          PayloadData payloadData, bool send, bool receive, bool received
-        )
+        private void Close(PayloadData payloadData, bool send, bool receive, bool received)
         {
             lock (_forState)
             {
@@ -1057,9 +966,7 @@ namespace Kogel.Net.WebSocket
             return ret;
         }
 
-        private bool CloseHandshake(
-          PayloadData payloadData, bool send, bool receive, bool received
-        )
+        private bool CloseHandshake(PayloadData payloadData, bool send, bool receive, bool received)
         {
             var sent = false;
             if (send)
@@ -2217,9 +2124,9 @@ namespace Kogel.Net.WebSocket
             return value == null || value == _version;
         }
 
-        
 
-        
+
+
 
         // As server
         internal void Close(HttpResponse response)
@@ -2427,9 +2334,9 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        
 
-        
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -3381,27 +3288,12 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        
-
-       
-
         /// <summary>
-        /// 关闭连接并释放所有相关的资源。
+        /// 关闭连接并释放所有相关的资源
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   This method closes the connection with close status 1001 (going away).
-        ///   </para>
-        ///   <para>
-        ///   And this method does nothing if the current state of the connection is
-        ///   Closing or Closed.
-        ///   </para>
-        /// </remarks>
         void IDisposable.Dispose()
         {
             _Close(1001, String.Empty);
         }
-
-        
     }
 }
