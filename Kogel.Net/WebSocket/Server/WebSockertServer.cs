@@ -811,6 +811,10 @@ namespace Kogel.Net.WebSocket.Server
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="millisecondsTimeout"></param>
         private void StopReceiving(int millisecondsTimeout)
         {
             try
@@ -826,9 +830,7 @@ namespace Kogel.Net.WebSocket.Server
             _receiveThread.Join(millisecondsTimeout);
         }
 
-        private static bool TryCreateUri(
-          string uriString, out Uri result, out string message
-        )
+        private static bool TryCreateUri(string uriString, out Uri result, out string message )
         {
             if (!uriString.TryCreateWebSocketUri(out result, out message))
                 return false;
