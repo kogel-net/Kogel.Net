@@ -7,8 +7,7 @@ using System.Security.Principal;
 namespace Kogel.Net.WebSocket.Extension.Net.WebSockets
 {
     /// <summary>
-    /// Provides the access to the information in a WebSocket handshake request to
-    /// a <see cref="HttpListener"/> instance.
+    /// 提供对 <see cref="HttpListener"/> 实例的 WebSocket 握手请求中的信息的访问
     /// </summary>
     public class HttpListenerWebSocketContext : WebSocketContext
     {
