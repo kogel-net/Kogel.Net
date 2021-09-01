@@ -14,34 +14,17 @@ namespace Kogel.Net.WebSocket.Extension
     /// </summary>
     public class HttpRequestEventArgs : EventArgs
     {
-        #region Private Fields
-
         private HttpListenerContext _context;
         private string _docRootPath;
-
-        #endregion
-
-        #region Internal Constructors
-
-        internal HttpRequestEventArgs(
-          HttpListenerContext context, string documentRootPath
-        )
+        internal HttpRequestEventArgs( HttpListenerContext context, string documentRootPath)
         {
             _context = context;
             _docRootPath = documentRootPath;
         }
 
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// Gets the request data sent from a client.
-        /// </summary>
-        /// <value>
-        /// A <see cref="HttpListenerRequest"/> that provides the methods and
-        /// properties for the request data.
-        /// </value>
+     /// <summary>
+     /// 
+     /// </summary>
         public HttpListenerRequest Request
         {
             get
@@ -51,12 +34,8 @@ namespace Kogel.Net.WebSocket.Extension
         }
 
         /// <summary>
-        /// Gets the response data to return to the client.
+        /// 
         /// </summary>
-        /// <value>
-        /// A <see cref="HttpListenerResponse"/> that provides the methods and
-        /// properties for the response data.
-        /// </value>
         public HttpListenerResponse Response
         {
             get
@@ -65,19 +44,9 @@ namespace Kogel.Net.WebSocket.Extension
             }
         }
 
-        /// <summary>
-        /// Gets the information for the client.
-        /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="IPrincipal"/> instance or <see langword="null"/>
-        ///   if not authenticated.
-        ///   </para>
-        ///   <para>
-        ///   That instance describes the identity, authentication scheme,
-        ///   and security roles for the client.
-        ///   </para>
-        /// </value>
+      /// <summary>
+      /// 
+      /// </summary>
         public IPrincipal User
         {
             get
@@ -86,10 +55,11 @@ namespace Kogel.Net.WebSocket.Extension
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="childPath"></param>
+        /// <returns></returns>
         private string CreateFilePath(string childPath)
         {
             childPath = childPath.TrimStart('/', '\\');
@@ -100,6 +70,12 @@ namespace Kogel.Net.WebSocket.Extension
                    .Replace('\\', '/');
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="contents"></param>
+        /// <returns></returns>
         private static bool _TryReadFile(string path, out byte[] contents)
         {
             contents = null;
@@ -119,41 +95,11 @@ namespace Kogel.Net.WebSocket.Extension
             return true;
         }
 
-        #endregion
-
-        #region Public Methods
-
         /// <summary>
-        /// Reads the specified file from the document folder of the
-        /// <see cref="HttpServer"/> class.
+        /// 从文档文件夹中读取指定的文件
         /// </summary>
-        /// <returns>
-        ///   <para>
-        ///   An array of <see cref="byte"/> or <see langword="null"/>
-        ///   if it fails.
-        ///   </para>
-        ///   <para>
-        ///   That array receives the contents of the file.
-        ///   </para>
-        /// </returns>
-        /// <param name="path">
-        /// A <see cref="string"/> that specifies a virtual path to
-        /// find the file from the document folder.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="path"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="path"/> is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> contains "..".
-        ///   </para>
-        /// </exception>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public byte[] ReadFile(string path)
         {
             if (path == null)
@@ -173,40 +119,12 @@ namespace Kogel.Net.WebSocket.Extension
             return contents;
         }
 
-        /// <summary>
-        /// Tries to read the specified file from the document folder of
-        /// the <see cref="HttpServer"/> class.
-        /// </summary>
-        /// <returns>
-        /// <c>true</c> if it succeeds to read; otherwise, <c>false</c>.
-        /// </returns>
-        /// <param name="path">
-        /// A <see cref="string"/> that specifies a virtual path to find
-        /// the file from the document folder.
-        /// </param>
-        /// <param name="contents">
-        ///   <para>
-        ///   When this method returns, an array of <see cref="byte"/> or
-        ///   <see langword="null"/> if it fails.
-        ///   </para>
-        ///   <para>
-        ///   That array receives the contents of the file.
-        ///   </para>
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="path"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="path"/> is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   -or-
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="path"/> contains "..".
-        ///   </para>
-        /// </exception>
+       /// <summary>
+       /// 
+       /// </summary>
+       /// <param name="path"></param>
+       /// <param name="contents"></param>
+       /// <returns></returns>
         public bool TryReadFile(string path, out byte[] contents)
         {
             if (path == null)
@@ -221,8 +139,6 @@ namespace Kogel.Net.WebSocket.Extension
             path = CreateFilePath(path);
 
             return _TryReadFile(path, out contents);
-        }
-
-        #endregion
+        }  
     }
 }

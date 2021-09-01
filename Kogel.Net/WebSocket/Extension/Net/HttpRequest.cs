@@ -8,17 +8,14 @@ using System.Threading.Tasks;
 
 namespace Kogel.Net.WebSocket.Extension.Net
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class HttpRequest : HttpBase
     {
-        #region Private Fields
-
         private CookieCollection _cookies;
         private string _method;
         private string _uri;
-
-        #endregion
-
-        #region Private Constructors
 
         private HttpRequest(string method, string uri, Version version, NameValueCollection headers)
           : base(version, headers)
@@ -27,19 +24,11 @@ namespace Kogel.Net.WebSocket.Extension.Net
             _uri = uri;
         }
 
-        #endregion
-
-        #region Internal Constructors
-
         internal HttpRequest(string method, string uri)
           : this(method, uri, HttpVersion.Version11, new NameValueCollection())
         {
             Headers["User-Agent"] = "websocket-sharp/1.0";
         }
-
-        #endregion
-
-        #region Public Properties
 
         public AuthenticationResponse AuthenticationResponse
         {
@@ -88,10 +77,6 @@ namespace Kogel.Net.WebSocket.Extension.Net
                 return _uri;
             }
         }
-
-        #endregion
-
-        #region Internal Methods
 
         internal static HttpRequest CreateConnectRequest(Uri uri)
         {
@@ -150,10 +135,6 @@ namespace Kogel.Net.WebSocket.Extension.Net
             return Read<HttpRequest>(stream, Parse, millisecondsTimeout);
         }
 
-        #endregion
-
-        #region Public Methods
-
         public void SetCookies(CookieCollection cookies)
         {
             if (cookies == null || cookies.Count == 0)
@@ -189,7 +170,5 @@ namespace Kogel.Net.WebSocket.Extension.Net
 
             return output.ToString();
         }
-
-        #endregion
     }
 }

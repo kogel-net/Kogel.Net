@@ -11,37 +11,17 @@ namespace Kogel.Net.WebSocket.Extension.Net
 {
     internal abstract class HttpBase
     {
-        #region Private Fields
-
         private NameValueCollection _headers;
         private const int _headersMaxLength = 8192;
         private Version _version;
-
-        #endregion
-
-        #region Internal Fields
-
         internal byte[] EntityBodyData;
-
-        #endregion
-
-        #region Protected Fields
-
         protected const string CrLf = "\r\n";
-
-        #endregion
-
-        #region Protected Constructors
 
         protected HttpBase(Version version, NameValueCollection headers)
         {
             _version = version;
             _headers = headers;
         }
-
-        #endregion
-
-        #region Public Properties
 
         public string EntityBody
         {
@@ -76,10 +56,6 @@ namespace Kogel.Net.WebSocket.Extension.Net
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static byte[] readEntityBody(Stream stream, string length)
         {
             long len;
@@ -100,7 +76,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         {
             var buff = new List<byte>();
             var cnt = 0;
-            Action<int> add = i => {
+            Action<int> add = i =>
+            {
                 if (i == -1)
                     throw new Exception("The header cannot be read from the data source.");
 
@@ -130,16 +107,21 @@ namespace Kogel.Net.WebSocket.Extension.Net
                    .Split(new[] { CrLf }, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        #endregion
-
-        #region Protected Methods
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="stream"></param>
+        /// <param name="parser"></param>
+        /// <param name="millisecondsTimeout"></param>
+        /// <returns></returns>
         protected static T Read<T>(Stream stream, Func<string[], T> parser, int millisecondsTimeout)
           where T : HttpBase
         {
             var timeout = false;
             var timer = new Timer(
-              state => {
+              state =>
+              {
                   timeout = true;
                   stream.Close();
               },
@@ -178,15 +160,9 @@ namespace Kogel.Net.WebSocket.Extension.Net
             return http;
         }
 
-        #endregion
-
-        #region Public Methods
-
         public byte[] ToByteArray()
         {
             return Encoding.UTF8.GetBytes(ToString());
         }
-
-        #endregion
     }
 }

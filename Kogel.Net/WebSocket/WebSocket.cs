@@ -18,7 +18,7 @@ namespace Kogel.Net.WebSocket
 {
     public class WebSocket : IDisposable
     {
-        #region Private Fields
+    
 
         private AuthenticationChallenge _authChallenge;
         private string _base64Key;
@@ -66,9 +66,9 @@ namespace Kogel.Net.WebSocket
         private Uri _uri;
         private const string _version = "13";
         private TimeSpan _waitTime;
-        #endregion
+        
 
-        #region Internal Fields
+        
 
         /// <summary>
         /// Represents the empty array of <see cref="byte"/> used internally.
@@ -94,9 +94,9 @@ namespace Kogel.Net.WebSocket
         /// </summary>
         internal static readonly RandomNumberGenerator RandomNumber;
 
-        #endregion
+        
 
-        #region Static Constructor
+        
 
         static WebSocket()
         {
@@ -106,9 +106,9 @@ namespace Kogel.Net.WebSocket
             RandomNumber = new RNGCryptoServiceProvider();
         }
 
-        #endregion
+        
 
-        #region Internal Constructors
+        
 
         // As server
         internal WebSocket(HttpListenerWebSocketContext context, string protocol)
@@ -139,9 +139,9 @@ namespace Kogel.Net.WebSocket
             Init();
         }
 
-        #endregion
+        
 
-        #region Public Constructors
+    
 
         /// <summary>
         /// 
@@ -177,9 +177,9 @@ namespace Kogel.Net.WebSocket
             Init();
         }
 
-        #endregion
+        
 
-        #region Internal Properties
+       
 
         internal CookieCollection CookieCollection
         {
@@ -234,9 +234,9 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        #endregion
+        
 
-        #region Public Properties
+        
 
         /// <summary>
         /// Gets or sets the compression method used to compress a message.
@@ -610,10 +610,7 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        #endregion
-
-        #region Public Events
-
+        
         /// <summary>
         /// Occurs when the WebSocket connection has been closed.
         /// </summary>
@@ -634,9 +631,9 @@ namespace Kogel.Net.WebSocket
         /// </summary>
         public event EventHandler OnOpen;
 
-        #endregion
+        
 
-        #region Private Methods
+        
 
         // As server
         private bool Accept()
@@ -2220,9 +2217,9 @@ namespace Kogel.Net.WebSocket
             return value == null || value == _version;
         }
 
-        #endregion
+        
 
-        #region Internal Methods
+        
 
         // As server
         internal void Close(HttpResponse response)
@@ -2430,9 +2427,9 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        #endregion
+        
 
-        #region Public Methods
+        
         /// <summary>
         /// 
         /// </summary>
@@ -3384,9 +3381,9 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        #endregion
+        
 
-        #region Explicit Interface Implementations
+       
 
         /// <summary>
         /// 关闭连接并释放所有相关的资源。
@@ -3405,6 +3402,6 @@ namespace Kogel.Net.WebSocket
             _Close(1001, String.Empty);
         }
 
-        #endregion
+        
     }
 }

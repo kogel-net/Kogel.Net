@@ -1,3 +1,4 @@
+using Kogel.Net.WebSocket.Enums;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -7,338 +8,333 @@ using System.Text;
 
 namespace Kogel.Net.WebSocket.Extension.Net
 {
-  internal class ChunkStream
-  {
-    #region Private Fields
-
-    private int                 _chunkRead;
-    private int                 _chunkSize;
-    private List<Chunk>         _chunks;
-    private bool                _gotIt;
-    private WebHeaderCollection _headers;
-    private StringBuilder       _saved;
-    private bool                _sawCr;
-    private InputChunkState     _state;
-    private int                 _trailerState;
-
-    #endregion
-
-    #region Public Constructors
-
-    public ChunkStream (WebHeaderCollection headers)
+    /// <summary>
+    /// 
+    /// </summary>
+    internal class ChunkStream
     {
-      _headers = headers;
+        private int _chunkRead;
+        private int _chunkSize;
+        private List<Chunk> _chunks;
+        private bool _gotIt;
+        private WebHeaderCollection _headers;
+        private StringBuilder _saved;
+        private bool _sawCr;
+        private InputChunkState _state;
+        private int _trailerState;
 
-      _chunkSize = -1;
-      _chunks = new List<Chunk> ();
-      _saved = new StringBuilder ();
-    }
+        public ChunkStream(WebHeaderCollection headers)
+        {
+            _headers = headers;
 
-    #endregion
-
-    #region Public Properties
-
-    public WebHeaderCollection Headers {
-      get {
-        return _headers;
-      }
-    }
-
-    public bool WantsMore {
-      get {
-        return _state < InputChunkState.End;
-      }
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private int read (byte[] buffer, int offset, int count)
-    {
-      var nread = 0;
-      var cnt = _chunks.Count;
-
-      for (var i = 0; i < cnt; i++) {
-        var chunk = _chunks[i];
-
-        if (chunk == null)
-          continue;
-
-        if (chunk.ReadLeft == 0) {
-          _chunks[i] = null;
-
-          continue;
+            _chunkSize = -1;
+            _chunks = new List<Chunk>();
+            _saved = new StringBuilder();
         }
 
-        nread += chunk.Read (buffer, offset + nread, count - nread);
-
-        if (nread == count)
-          break;
-      }
-
-      return nread;
-    }
-
-    private InputChunkState seekCrLf (byte[] buffer, ref int offset, int length)
-    {
-      if (!_sawCr) {
-        if (buffer[offset++] != 13)
-          throwProtocolViolation ("CR is expected.");
-
-        _sawCr = true;
-
-        if (offset == length)
-          return InputChunkState.DataEnded;
-      }
-
-      if (buffer[offset++] != 10)
-        throwProtocolViolation ("LF is expected.");
-
-      return InputChunkState.None;
-    }
-
-    private InputChunkState setChunkSize (
-      byte[] buffer, ref int offset, int length
-    )
-    {
-      byte b = 0;
-
-      while (offset < length) {
-        b = buffer[offset++];
-
-        if (_sawCr) {
-          if (b != 10)
-            throwProtocolViolation ("LF is expected.");
-
-          break;
+        public WebHeaderCollection Headers
+        {
+            get
+            {
+                return _headers;
+            }
         }
 
-        if (b == 13) {
-          _sawCr = true;
-
-          continue;
+        public bool WantsMore
+        {
+            get
+            {
+                return _state < InputChunkState.End;
+            }
         }
 
-        if (b == 10)
-          throwProtocolViolation ("LF is unexpected.");
+        private int read(byte[] buffer, int offset, int count)
+        {
+            var nread = 0;
+            var cnt = _chunks.Count;
 
-        if (_gotIt)
-          continue;
+            for (var i = 0; i < cnt; i++)
+            {
+                var chunk = _chunks[i];
 
-        if (b == 32 || b == 59) { // SP or ';'
-          _gotIt = true;
+                if (chunk == null)
+                    continue;
 
-          continue;
+                if (chunk.ReadLeft == 0)
+                {
+                    _chunks[i] = null;
+
+                    continue;
+                }
+
+                nread += chunk.Read(buffer, offset + nread, count - nread);
+
+                if (nread == count)
+                    break;
+            }
+
+            return nread;
         }
 
-        _saved.Append ((char) b);
-      }
+        private InputChunkState seekCrLf(byte[] buffer, ref int offset, int length)
+        {
+            if (!_sawCr)
+            {
+                if (buffer[offset++] != 13)
+                    throwProtocolViolation("CR is expected.");
 
-      if (_saved.Length > 20)
-        throwProtocolViolation ("The chunk size is too big.");
+                _sawCr = true;
 
-      if (b != 10)
-        return InputChunkState.None;
+                if (offset == length)
+                    return InputChunkState.DataEnded;
+            }
 
-      var s = _saved.ToString ();
+            if (buffer[offset++] != 10)
+                throwProtocolViolation("LF is expected.");
 
-      try {
-        _chunkSize = Int32.Parse (s, NumberStyles.HexNumber);
-      }
-      catch {
-        throwProtocolViolation ("The chunk size cannot be parsed.");
-      }
-
-      _chunkRead = 0;
-
-      if (_chunkSize == 0) {
-        _trailerState = 2;
-
-        return InputChunkState.Trailer;
-      }
-
-      return InputChunkState.Data;
-    }
-
-    private InputChunkState setTrailer (
-      byte[] buffer, ref int offset, int length
-    )
-    {
-      while (offset < length) {
-        if (_trailerState == 4) // CR LF CR LF
-          break;
-
-        var b = buffer[offset++];
-        _saved.Append ((char) b);
-
-        if (_trailerState == 1 || _trailerState == 3) { // CR or CR LF CR
-          if (b != 10)
-            throwProtocolViolation ("LF is expected.");
-
-          _trailerState++;
-
-          continue;
+            return InputChunkState.None;
         }
 
-        if (b == 13) {
-          _trailerState++;
+        private InputChunkState setChunkSize(byte[] buffer, ref int offset, int length)
+        {
+            byte b = 0;
 
-          continue;
+            while (offset < length)
+            {
+                b = buffer[offset++];
+
+                if (_sawCr)
+                {
+                    if (b != 10)
+                        throwProtocolViolation("LF is expected.");
+
+                    break;
+                }
+
+                if (b == 13)
+                {
+                    _sawCr = true;
+
+                    continue;
+                }
+
+                if (b == 10)
+                    throwProtocolViolation("LF is unexpected.");
+
+                if (_gotIt)
+                    continue;
+
+                if (b == 32 || b == 59)
+                { // SP or ';'
+                    _gotIt = true;
+
+                    continue;
+                }
+
+                _saved.Append((char)b);
+            }
+
+            if (_saved.Length > 20)
+                throwProtocolViolation("The chunk size is too big.");
+
+            if (b != 10)
+                return InputChunkState.None;
+
+            var s = _saved.ToString();
+
+            try
+            {
+                _chunkSize = Int32.Parse(s, NumberStyles.HexNumber);
+            }
+            catch
+            {
+                throwProtocolViolation("The chunk size cannot be parsed.");
+            }
+
+            _chunkRead = 0;
+
+            if (_chunkSize == 0)
+            {
+                _trailerState = 2;
+
+                return InputChunkState.Trailer;
+            }
+
+            return InputChunkState.Data;
         }
 
-        if (b == 10)
-          throwProtocolViolation ("LF is unexpected.");
+        private InputChunkState setTrailer(byte[] buffer, ref int offset, int length)
+        {
+            while (offset < length)
+            {
+                if (_trailerState == 4) // CR LF CR LF
+                    break;
 
-        _trailerState = 0;
-      }
+                var b = buffer[offset++];
+                _saved.Append((char)b);
 
-      var len = _saved.Length;
+                if (_trailerState == 1 || _trailerState == 3)
+                { // CR or CR LF CR
+                    if (b != 10)
+                        throwProtocolViolation("LF is expected.");
 
-      if (len > 4196)
-        throwProtocolViolation ("The trailer is too long.");
+                    _trailerState++;
 
-      if (_trailerState < 4)
-        return InputChunkState.Trailer;
+                    continue;
+                }
 
-      if (len == 2)
-        return InputChunkState.End;
+                if (b == 13)
+                {
+                    _trailerState++;
 
-      _saved.Length = len - 2;
-      var val = _saved.ToString ();
-      var reader = new StringReader (val);
+                    continue;
+                }
 
-      while (true) {
-        var line = reader.ReadLine ();
+                if (b == 10)
+                    throwProtocolViolation("LF is unexpected.");
 
-        if (line == null || line.Length == 0)
-          break;
+                _trailerState = 0;
+            }
 
-        _headers.Add (line);
-      }
+            var len = _saved.Length;
 
-      return InputChunkState.End;
+            if (len > 4196)
+                throwProtocolViolation("The trailer is too long.");
+
+            if (_trailerState < 4)
+                return InputChunkState.Trailer;
+
+            if (len == 2)
+                return InputChunkState.End;
+
+            _saved.Length = len - 2;
+            var val = _saved.ToString();
+            var reader = new StringReader(val);
+
+            while (true)
+            {
+                var line = reader.ReadLine();
+
+                if (line == null || line.Length == 0)
+                    break;
+
+                _headers.Add(line);
+            }
+
+            return InputChunkState.End;
+        }
+
+        private static void throwProtocolViolation(string message)
+        {
+            throw new WebException(
+                    message, null, WebExceptionStatus.ServerProtocolViolation, null
+                  );
+        }
+
+        private void write(byte[] buffer, int offset, int length)
+        {
+            if (_state == InputChunkState.End)
+                throwProtocolViolation("The chunks were ended.");
+
+            if (_state == InputChunkState.None)
+            {
+                _state = setChunkSize(buffer, ref offset, length);
+
+                if (_state == InputChunkState.None)
+                    return;
+
+                _saved.Length = 0;
+                _sawCr = false;
+                _gotIt = false;
+            }
+
+            if (_state == InputChunkState.Data)
+            {
+                if (offset >= length)
+                    return;
+
+                _state = writeData(buffer, ref offset, length);
+
+                if (_state == InputChunkState.Data)
+                    return;
+            }
+
+            if (_state == InputChunkState.DataEnded)
+            {
+                if (offset >= length)
+                    return;
+
+                _state = seekCrLf(buffer, ref offset, length);
+
+                if (_state == InputChunkState.DataEnded)
+                    return;
+
+                _sawCr = false;
+            }
+
+            if (_state == InputChunkState.Trailer)
+            {
+                if (offset >= length)
+                    return;
+
+                _state = setTrailer(buffer, ref offset, length);
+
+                if (_state == InputChunkState.Trailer)
+                    return;
+
+                _saved.Length = 0;
+            }
+
+            if (offset >= length)
+                return;
+
+            write(buffer, offset, length);
+        }
+
+        private InputChunkState writeData(byte[] buffer, ref int offset, int length)
+        {
+            var cnt = length - offset;
+            var left = _chunkSize - _chunkRead;
+
+            if (cnt > left)
+                cnt = left;
+
+            var data = new byte[cnt];
+            Buffer.BlockCopy(buffer, offset, data, 0, cnt);
+
+            var chunk = new Chunk(data);
+            _chunks.Add(chunk);
+
+            offset += cnt;
+            _chunkRead += cnt;
+
+            return _chunkRead == _chunkSize
+                   ? InputChunkState.DataEnded
+                   : InputChunkState.Data;
+        }
+
+        internal void ResetBuffer()
+        {
+            _chunkRead = 0;
+            _chunkSize = -1;
+
+            _chunks.Clear();
+        }
+
+        public int Read(byte[] buffer, int offset, int count)
+        {
+            if (count <= 0)
+                return 0;
+
+            return read(buffer, offset, count);
+        }
+
+        public void Write(byte[] buffer, int offset, int count)
+        {
+            if (count <= 0)
+                return;
+
+            write(buffer, offset, offset + count);
+        }
     }
-
-    private static void throwProtocolViolation (string message)
-    {
-      throw new WebException (
-              message, null, WebExceptionStatus.ServerProtocolViolation, null
-            );
-    }
-
-    private void write (byte[] buffer, int offset, int length)
-    {
-      if (_state == InputChunkState.End)
-        throwProtocolViolation ("The chunks were ended.");
-
-      if (_state == InputChunkState.None) {
-        _state = setChunkSize (buffer, ref offset, length);
-
-        if (_state == InputChunkState.None)
-          return;
-
-        _saved.Length = 0;
-        _sawCr = false;
-        _gotIt = false;
-      }
-
-      if (_state == InputChunkState.Data) {
-        if (offset >= length)
-          return;
-
-        _state = writeData (buffer, ref offset, length);
-
-        if (_state == InputChunkState.Data)
-          return;
-      }
-
-      if (_state == InputChunkState.DataEnded) {
-        if (offset >= length)
-          return;
-
-        _state = seekCrLf (buffer, ref offset, length);
-
-        if (_state == InputChunkState.DataEnded)
-          return;
-
-        _sawCr = false;
-      }
-
-      if (_state == InputChunkState.Trailer) {
-        if (offset >= length)
-          return;
-
-        _state = setTrailer (buffer, ref offset, length);
-
-        if (_state == InputChunkState.Trailer)
-          return;
-
-        _saved.Length = 0;
-      }
-
-      if (offset >= length)
-        return;
-
-      write (buffer, offset, length);
-    }
-
-    private InputChunkState writeData (
-      byte[] buffer, ref int offset, int length
-    )
-    {
-      var cnt = length - offset;
-      var left = _chunkSize - _chunkRead;
-
-      if (cnt > left)
-        cnt = left;
-
-      var data = new byte[cnt];
-      Buffer.BlockCopy (buffer, offset, data, 0, cnt);
-
-      var chunk = new Chunk (data);
-      _chunks.Add (chunk);
-
-      offset += cnt;
-      _chunkRead += cnt;
-
-      return _chunkRead == _chunkSize
-             ? InputChunkState.DataEnded
-             : InputChunkState.Data;
-    }
-
-    #endregion
-
-    #region Internal Methods
-
-    internal void ResetBuffer ()
-    {
-      _chunkRead = 0;
-      _chunkSize = -1;
-
-      _chunks.Clear ();
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    public int Read (byte[] buffer, int offset, int count)
-    {
-      if (count <= 0)
-        return 0;
-
-      return read (buffer, offset, count);
-    }
-
-    public void Write (byte[] buffer, int offset, int count)
-    {
-      if (count <= 0)
-        return;
-
-      write (buffer, offset, offset + count);
-    }
-
-    #endregion
-  }
 }

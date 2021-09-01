@@ -22,9 +22,8 @@ namespace Kogel.Net.Http
         private Encoding postencoding = Encoding.Default;
         internal HttpWebRequest httpRequest = null;
         internal HttpWebResponse httpResponse = null;
-        #region Aop
         public static AopProvider Aop { get => AopProvider.Get(); }
-        #endregion
+        
 
         /// <summary>
         /// 生成请求数据
@@ -53,7 +52,6 @@ namespace Kogel.Net.Http
         /// <param name="result"></param>
         private void GetData(KogelRequest request, KogelResponse result)
         {
-            #region base
             //获取StatusCode
             result.StatusCode = httpResponse.StatusCode;
             //获取StatusDescription
@@ -66,14 +64,9 @@ namespace Kogel.Net.Http
             if (httpResponse.Cookies != null) result.CookieCollection = httpResponse.Cookies;
             //获取set-cookie
             if (httpResponse.Headers["set-cookie"] != null) result.Cookie = httpResponse.Headers["set-cookie"];
-            #endregion
-
-            #region byte
+            
             //处理网页Byte
-            byte[] ResponseByte = GetByte();
-            #endregion
-
-            #region Html
+            byte[] ResponseByte = GetByte();        
             if (ResponseByte != null & ResponseByte.Length > 0)
             {
                 //设置编码
@@ -85,8 +78,7 @@ namespace Kogel.Net.Http
             {
                 //没有返回任何Html代码
                 result.Result = string.Empty;
-            }
-            #endregion
+            }       
         }
 
         /// <summary>

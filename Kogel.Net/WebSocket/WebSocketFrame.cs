@@ -13,7 +13,7 @@ namespace Kogel.Net.WebSocket
 {
     internal class WebSocketFrame : IEnumerable<byte>
     {
-        #region Private Fields
+    
 
         private byte[] _extPayloadLength;
         private Fin _fin;
@@ -26,9 +26,9 @@ namespace Kogel.Net.WebSocket
         private Rsv _rsv2;
         private Rsv _rsv3;
 
-        #endregion
+        
 
-        #region Internal Fields
+        
 
         /// <summary>
         /// Represents the ping frame without the payload data as an array of
@@ -40,26 +40,26 @@ namespace Kogel.Net.WebSocket
         /// </remarks>
         internal static readonly byte[] EmptyPingBytes;
 
-        #endregion
+        
 
-        #region Static Constructor
+        
 
         static WebSocketFrame()
         {
             EmptyPingBytes = CreatePingFrame(false).ToArray();
         }
 
-        #endregion
+        
 
-        #region Private Constructors
+        
 
         private WebSocketFrame()
         {
         }
 
-        #endregion
+        
 
-        #region Internal Constructors
+        
 
         internal WebSocketFrame(Opcode opcode, PayloadData payloadData, bool mask)
           : this(Fin.Final, opcode, payloadData, false, mask)
@@ -120,9 +120,9 @@ namespace Kogel.Net.WebSocket
             _payloadData = payloadData;
         }
 
-        #endregion
+        
 
-        #region Internal Properties
+       
 
         internal ulong ExactPayloadLength
         {
@@ -148,9 +148,9 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        #endregion
+        
 
-        #region Public Properties
+        
 
         public byte[] ExtendedPayloadLength
         {
@@ -338,9 +338,9 @@ namespace Kogel.Net.WebSocket
             }
         }
 
-        #endregion
+        
 
-        #region Private Methods
+        
 
         private static byte[] createMaskingKey()
         {
@@ -785,9 +785,9 @@ Extended Payload Length: {7}
             }
         }
 
-        #endregion
+        
 
-        #region Internal Methods
+        
 
         internal static WebSocketFrame CreateCloseFrame(
           PayloadData payloadData, bool mask
@@ -882,9 +882,9 @@ Extended Payload Length: {7}
             _maskingKey = WebSocket.EmptyBytes;
         }
 
-        #endregion
+        
 
-        #region Public Methods
+        
 
         public IEnumerator<byte> GetEnumerator()
         {
@@ -944,15 +944,15 @@ Extended Payload Length: {7}
             return BitConverter.ToString(ToArray());
         }
 
-        #endregion
+        
 
-        #region Explicit Interface Implementations
+       
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
-        #endregion
+        
     }
 }

@@ -13,8 +13,6 @@ namespace Kogel.Net.WebSocket.Extension.Net
     [Serializable]
     public sealed class Cookie
     {
-        #region Private Fields
-
         private string _comment;
         private Uri _commentUri;
         private bool _discard;
@@ -33,31 +31,19 @@ namespace Kogel.Net.WebSocket.Extension.Net
         private string _value;
         private int _version;
 
-        #endregion
-
-        #region Static Constructor
-
         static Cookie()
         {
             _emptyPorts = new int[0];
             _reservedCharsForValue = new[] { ';', ',' };
         }
 
-        #endregion
-
-        #region Internal Constructors
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="Cookie"/> class.
+        /// 初始化 <see cref="Cookie"/> 类的新实例
         /// </summary>
         internal Cookie()
         {
             init(String.Empty, String.Empty, String.Empty, String.Empty);
         }
-
-        #endregion
-
-        #region Public Constructors
 
         /// <summary>
         /// 
@@ -70,110 +56,23 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Cookie"/> class with
-        /// the specified name, value, and path.
+        /// 使用指定的名称、值和路径初始化 <see cref="Cookie"/> 类的新实例
         /// </summary>
-        /// <param name="name">
-        ///   <para>
-        ///   A <see cref="string"/> that specifies the name of the cookie.
-        ///   </para>
-        ///   <para>
-        ///   The name must be a token defined in
-        ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
-        ///   RFC 2616</see>.
-        ///   </para>
-        /// </param>
-        /// <param name="value">
-        /// A <see cref="string"/> that specifies the value of the cookie.
-        /// </param>
-        /// <param name="path">
-        /// A <see cref="string"/> that specifies the value of the Path
-        /// attribute of the cookie.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="name"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="name"/> is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   - or -
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="name"/> starts with a dollar sign.
-        ///   </para>
-        ///   <para>
-        ///   - or -
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="name"/> contains an invalid character.
-        ///   </para>
-        ///   <para>
-        ///   - or -
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="value"/> is a string not enclosed in double quotes
-        ///   that contains an invalid character.
-        ///   </para>
-        /// </exception>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="path"></param>
         public Cookie(string name, string value, string path)
           : this(name, value, path, String.Empty)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Cookie"/> class with
-        /// the specified name, value, path, and domain.
+        /// 使用指定的名称、值、路径和域初始化 <see cref="Cookie"/> 类的新实例
         /// </summary>
-        /// <param name="name">
-        ///   <para>
-        ///   A <see cref="string"/> that specifies the name of the cookie.
-        ///   </para>
-        ///   <para>
-        ///   The name must be a token defined in
-        ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
-        ///   RFC 2616</see>.
-        ///   </para>
-        /// </param>
-        /// <param name="value">
-        /// A <see cref="string"/> that specifies the value of the cookie.
-        /// </param>
-        /// <param name="path">
-        /// A <see cref="string"/> that specifies the value of the Path
-        /// attribute of the cookie.
-        /// </param>
-        /// <param name="domain">
-        /// A <see cref="string"/> that specifies the value of the Domain
-        /// attribute of the cookie.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="name"/> is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   <paramref name="name"/> is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   - or -
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="name"/> starts with a dollar sign.
-        ///   </para>
-        ///   <para>
-        ///   - or -
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="name"/> contains an invalid character.
-        ///   </para>
-        ///   <para>
-        ///   - or -
-        ///   </para>
-        ///   <para>
-        ///   <paramref name="value"/> is a string not enclosed in double quotes
-        ///   that contains an invalid character.
-        ///   </para>
-        /// </exception>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="path"></param>
+        /// <param name="domain"></param>
         public Cookie(string name, string value, string path, string domain)
         {
             if (name == null)
@@ -209,10 +108,9 @@ namespace Kogel.Net.WebSocket.Extension.Net
             init(name, value, path ?? String.Empty, domain ?? String.Empty);
         }
 
-        #endregion
-
-        #region Internal Properties
-
+        /// <summary>
+        /// 
+        /// </summary>
         internal bool ExactDomain
         {
             get
@@ -221,6 +119,9 @@ namespace Kogel.Net.WebSocket.Extension.Net
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         internal int MaxAge
         {
             get
@@ -267,25 +168,9 @@ namespace Kogel.Net.WebSocket.Extension.Net
             }
         }
 
-        #endregion
-
-        #region Public Properties
-
         /// <summary>
-        /// Gets the value of the Comment attribute of the cookie.
+        /// 获取cookie的Comment属性值
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="string"/> that represents the comment to document
-        ///   intended use of the cookie.
-        ///   </para>
-        ///   <para>
-        ///   <see langword="null"/> if not present.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see langword="null"/>.
-        ///   </para>
-        /// </value>
         public string Comment
         {
             get
@@ -300,20 +185,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets the value of the CommentURL attribute of the cookie.
+        /// 获取 cookie 的 CommentURL 属性值
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="Uri"/> that represents the URI that provides
-        ///   the comment to document intended use of the cookie.
-        ///   </para>
-        ///   <para>
-        ///   <see langword="null"/> if not present.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see langword="null"/>.
-        ///   </para>
-        /// </value>
         public Uri CommentUri
         {
             get
@@ -328,18 +201,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets a value indicating whether the client discards the cookie
-        /// unconditionally when the client terminates.
+        /// 获取一个值，该值指示客户端是否在客户端终止时无条件丢弃 cookie
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if the client discards the cookie unconditionally
-        ///   when the client terminates; otherwise, <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>false</c>.
-        ///   </para>
-        /// </value>
         public bool Discard
         {
             get
@@ -354,17 +217,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets or sets the value of the Domain attribute of the cookie.
+        /// 获取或设置cookie的Domain属性值
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="string"/> that represents the domain name that
-        ///   the cookie is valid for.
-        ///   </para>
-        ///   <para>
-        ///   An empty string if this attribute is not needed.
-        ///   </para>
-        /// </value>
         public string Domain
         {
             get
@@ -379,16 +233,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the cookie has expired.
+        /// 获取或设置一个值，该值指示 cookie 是否已过期
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if the cookie has expired; otherwise, <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>false</c>.
-        ///   </para>
-        /// </value>
         public bool Expired
         {
             get
@@ -403,20 +249,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets or sets the value of the Expires attribute of the cookie.
+        /// 获取或设置cookie的Expires属性值
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="DateTime"/> that represents the date and time that
-        ///   the cookie expires on.
-        ///   </para>
-        ///   <para>
-        ///   <see cref="DateTime.MinValue"/> if this attribute is not needed.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see cref="DateTime.MinValue"/>.
-        ///   </para>
-        /// </value>
         public DateTime Expires
         {
             get
@@ -431,18 +265,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether non-HTTP APIs can access
-        /// the cookie.
+        /// 获取或设置一个值，该值指示非 HTTP API 是否可以访问 cookie
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if non-HTTP APIs cannot access the cookie; otherwise,
-        ///   <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>false</c>.
-        ///   </para>
-        /// </value>
         public bool HttpOnly
         {
             get
@@ -457,38 +281,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets or sets the name of the cookie.
+        /// 获取或设置cookie的名称
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="string"/> that represents the name of the cookie.
-        ///   </para>
-        ///   <para>
-        ///   The name must be a token defined in
-        ///   <see href="http://tools.ietf.org/html/rfc2616#section-2.2">
-        ///   RFC 2616</see>.
-        ///   </para>
-        /// </value>
-        /// <exception cref="ArgumentNullException">
-        /// The value specified for a set operation is <see langword="null"/>.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        ///   <para>
-        ///   The value specified for a set operation is an empty string.
-        ///   </para>
-        ///   <para>
-        ///   - or -
-        ///   </para>
-        ///   <para>
-        ///   The value specified for a set operation starts with a dollar sign.
-        ///   </para>
-        ///   <para>
-        ///   - or -
-        ///   </para>
-        ///   <para>
-        ///   The value specified for a set operation contains an invalid character.
-        ///   </para>
-        /// </exception>
         public string Name
         {
             get
@@ -521,12 +315,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets or sets the value of the Path attribute of the cookie.
+        /// 
         /// </summary>
-        /// <value>
-        /// A <see cref="string"/> that represents the subset of URI on
-        /// the origin server that the cookie applies to.
-        /// </value>
         public string Path
         {
             get
@@ -541,20 +331,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets the value of the Port attribute of the cookie.
+        /// 
         /// </summary>
-        /// <value>
-        ///   <para>
-        ///   A <see cref="string"/> that represents the list of TCP ports
-        ///   that the cookie applies to.
-        ///   </para>
-        ///   <para>
-        ///   <see langword="null"/> if not present.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <see langword="null"/>.
-        ///   </para>
-        /// </value>
         public string Port
         {
             get
@@ -574,22 +352,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the security level of
-        /// the cookie is secure.
+        /// 
         /// </summary>
-        /// <remarks>
-        /// When this property is <c>true</c>, the cookie may be included in
-        /// the request only if the request is transmitted over HTTPS.
-        /// </remarks>
-        /// <value>
-        ///   <para>
-        ///   <c>true</c> if the security level of the cookie is secure;
-        ///   otherwise, <c>false</c>.
-        ///   </para>
-        ///   <para>
-        ///   The default value is <c>false</c>.
-        ///   </para>
-        /// </value>
         public bool Secure
         {
             get
@@ -604,12 +368,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets the time when the cookie was issued.
+        /// 
         /// </summary>
-        /// <value>
-        /// A <see cref="DateTime"/> that represents the time when
-        /// the cookie was issued.
-        /// </value>
         public DateTime TimeStamp
         {
             get
@@ -619,15 +379,8 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets or sets the value of the cookie.
+        /// 
         /// </summary>
-        /// <value>
-        /// A <see cref="string"/> that represents the value of the cookie.
-        /// </value>
-        /// <exception cref="ArgumentException">
-        /// The value specified for a set operation is a string not enclosed in
-        /// double quotes that contains an invalid character.
-        /// </exception>
         public string Value
         {
             get
@@ -653,21 +406,9 @@ namespace Kogel.Net.WebSocket.Extension.Net
             }
         }
 
-        /// <summary>
-        /// Gets the value of the Version attribute of the cookie.
-        /// </summary>
-        /// <value>
-        ///   <para>
-        ///   An <see cref="int"/> that represents the version of HTTP state
-        ///   management that the cookie conforms to.
-        ///   </para>
-        ///   <para>
-        ///   0 or 1. 0 if not present.
-        ///   </para>
-        ///   <para>
-        ///   The default value is 0.
-        ///   </para>
-        /// </value>
+       /// <summary>
+       /// 
+       /// </summary>
         public int Version
         {
             get
@@ -683,10 +424,6 @@ namespace Kogel.Net.WebSocket.Extension.Net
                 _version = value;
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private static int hash(int i, int j, int k, int l, int m)
         {
@@ -811,10 +548,11 @@ namespace Kogel.Net.WebSocket.Extension.Net
             return true;
         }
 
-        #endregion
-
-        #region Internal Methods
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cookie"></param>
+        /// <returns></returns>
         internal bool EqualsWithoutValue(Cookie cookie)
         {
             var caseSensitive = StringComparison.InvariantCulture;
@@ -873,12 +611,9 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Returns a string that represents the current cookie instance.
+        /// 返回表示当前 cookie 实例的字符串
         /// </summary>
-        /// <returns>
-        /// A <see cref="string"/> that is suitable for the Set-Cookie response
-        /// header.
-        /// </returns>
+        /// <returns></returns>
         internal string ToResponseString()
         {
             return _name.Length == 0
@@ -888,9 +623,14 @@ namespace Kogel.Net.WebSocket.Extension.Net
                      : toResponseStringVersion1();
         }
 
-        internal static bool TryCreate(
-          string name, string value, out Cookie result
-        )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        internal static bool TryCreate(string name, string value, out Cookie result)
         {
             result = null;
 
@@ -906,27 +646,12 @@ namespace Kogel.Net.WebSocket.Extension.Net
             return true;
         }
 
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
-        /// Determines whether the current cookie instance is equal to
-        /// the specified <see cref="object"/> instance.
+        /// 判断当前cookie实例是否等于指定的<see cref="object"/>实例
         /// </summary>
-        /// <param name="comparand">
-        ///   <para>
-        ///   An <see cref="object"/> instance to compare with
-        ///   the current cookie instance.
-        ///   </para>
-        ///   <para>
-        ///   An reference to a <see cref="Cookie"/> instance.
-        ///   </para>
-        /// </param>
-        /// <returns>
-        /// <c>true</c> if the current cookie instance is equal to
-        /// <paramref name="comparand"/>; otherwise, <c>false</c>.
-        /// </returns>
+        /// <param name="comparand"></param>
+        /// <returns></returns>
         public override bool Equals(object comparand)
         {
             var cookie = comparand as Cookie;
@@ -944,11 +669,9 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Gets a hash code for the current cookie instance.
+        /// 获取当前 cookie 实例的hash
         /// </summary>
-        /// <returns>
-        /// An <see cref="int"/> that represents the hash code.
-        /// </returns>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return hash(
@@ -961,16 +684,12 @@ namespace Kogel.Net.WebSocket.Extension.Net
         }
 
         /// <summary>
-        /// Returns a string that represents the current cookie instance.
+        /// 
         /// </summary>
-        /// <returns>
-        /// A <see cref="string"/> that is suitable for the Cookie request header.
-        /// </returns>
+        /// <returns></returns>
         public override string ToString()
         {
             return ToRequestString(null);
         }
-
-        #endregion
     }
 }

@@ -8,17 +8,13 @@ using System.Threading.Tasks;
 
 namespace Kogel.Net.WebSocket.Extension.Net
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal class HttpResponse : HttpBase
     {
-        #region Private Fields
-
         private string _code;
         private string _reason;
-
-        #endregion
-
-        #region Private Constructors
-
         private HttpResponse(string code, string reason, Version version, NameValueCollection headers)
           : base(version, headers)
         {
@@ -26,24 +22,14 @@ namespace Kogel.Net.WebSocket.Extension.Net
             _reason = reason;
         }
 
-        #endregion
-
-        #region Internal Constructors
-
-        internal HttpResponse(HttpStatusCode code)
-          : this(code, code.GetDescription())
+        internal HttpResponse(HttpStatusCode code) : this(code, code.GetDescription())
         {
         }
 
-        internal HttpResponse(HttpStatusCode code, string reason)
-          : this(((int)code).ToString(), reason, HttpVersion.Version11, new NameValueCollection())
+        internal HttpResponse(HttpStatusCode code, string reason) : this(((int)code).ToString(), reason, HttpVersion.Version11, new NameValueCollection())
         {
             Headers["Server"] = "websocket-sharp/1.0";
         }
-
-        #endregion
-
-        #region Public Properties
 
         public CookieCollection Cookies
         {
@@ -112,10 +98,6 @@ namespace Kogel.Net.WebSocket.Extension.Net
             }
         }
 
-        #endregion
-
-        #region Internal Methods
-
         internal static HttpResponse CreateCloseResponse(HttpStatusCode code)
         {
             var res = new HttpResponse(code);
@@ -161,11 +143,6 @@ namespace Kogel.Net.WebSocket.Extension.Net
         {
             return Read<HttpResponse>(stream, Parse, millisecondsTimeout);
         }
-
-        #endregion
-
-        #region Public Methods
-
         public void SetCookies(CookieCollection cookies)
         {
             if (cookies == null || cookies.Count == 0)
@@ -193,7 +170,5 @@ namespace Kogel.Net.WebSocket.Extension.Net
 
             return output.ToString();
         }
-
-        #endregion
     }
 }

@@ -9,53 +9,26 @@ namespace Kogel.Net.WebSocket.Extension.Net
 {
     internal class PayloadData : IEnumerable<byte>
     {
-        #region Private Fields
-
         private byte[] _data;
         private long _extDataLength;
         private long _length;
 
-        #endregion
-
-        #region Public Fields
-
         /// <summary>
-        /// Represents the empty payload data.
+        /// 
         /// </summary>
         public static readonly PayloadData Empty;
 
         /// <summary>
-        /// Represents the allowable max length of payload data.
+        /// 
         /// </summary>
-        /// <remarks>
-        ///   <para>
-        ///   A <see cref="WebSocketException"/> will occur when the length of
-        ///   incoming payload data is greater than the value of this field.
-        ///   </para>
-        ///   <para>
-        ///   If you would like to change the value of this field, it must be
-        ///   a number between <see cref="WebSocket.FragmentLength"/> and
-        ///   <see cref="Int64.MaxValue"/> inclusive.
-        ///   </para>
-        /// </remarks>
         public static readonly ulong MaxLength;
-
-        #endregion
-
-        #region Static Constructor
 
         static PayloadData()
         {
             Empty = new PayloadData(WebSocket.EmptyBytes, 0);
             MaxLength = Int64.MaxValue;
         }
-
-        #endregion
-
-        #region Internal Constructors
-
-        internal PayloadData(byte[] data)
-          : this(data, data.LongLength)
+        internal PayloadData(byte[] data) : this(data, data.LongLength)
         {
         }
 
@@ -70,10 +43,6 @@ namespace Kogel.Net.WebSocket.Extension.Net
             _data = code.Append(reason);
             _length = _data.LongLength;
         }
-
-        #endregion
-
-        #region Internal Properties
 
         internal ushort Code
         {
@@ -122,10 +91,6 @@ namespace Kogel.Net.WebSocket.Extension.Net
             }
         }
 
-        #endregion
-
-        #region Public Properties
-
         public byte[] ApplicationData
         {
             get
@@ -154,19 +119,11 @@ namespace Kogel.Net.WebSocket.Extension.Net
             }
         }
 
-        #endregion
-
-        #region Internal Methods
-
         internal void Mask(byte[] key)
         {
             for (long i = 0; i < _length; i++)
                 _data[i] = (byte)(_data[i] ^ key[i % 4]);
         }
-
-        #endregion
-
-        #region Public Methods
 
         public IEnumerator<byte> GetEnumerator()
         {
@@ -184,15 +141,9 @@ namespace Kogel.Net.WebSocket.Extension.Net
             return BitConverter.ToString(_data);
         }
 
-        #endregion
-
-        #region Explicit Interface Implementations
-
-       System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-
-        #endregion
     }
 }
