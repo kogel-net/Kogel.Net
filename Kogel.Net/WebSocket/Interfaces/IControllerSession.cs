@@ -11,7 +11,7 @@ namespace Kogel.Net.WebSocket.Interfaces
     /// <summary>
     /// 在 WebSocket 会话中公开对信息的访问
     /// </summary>
-    public interface IWebSocketSession
+    public interface IControllerSession
     {
         /// <summary>
         /// 获取会话的 WebSocket 连接的当前状态。
@@ -24,7 +24,7 @@ namespace Kogel.Net.WebSocket.Interfaces
         WebSocketContext Context { get; }
 
         /// <summary>
-        /// 获取会话的唯一 ID
+        /// 获取会话的唯一ID
         /// </summary>
         string Id { get; }
 

@@ -14,7 +14,7 @@ namespace Kogel.Net.WebSocket.Server
     public abstract class WebSocketServiceHost
     {
         private string _path;
-        private WebSocketSessionManager _sessions;
+        private WebSocketControllerManager _sessions;
 
         /// <summary>
         /// 
@@ -23,7 +23,7 @@ namespace Kogel.Net.WebSocket.Server
         protected WebSocketServiceHost(string path)
         {
             _path = path;
-            _sessions = new WebSocketSessionManager();
+            _sessions = new WebSocketControllerManager();
         }
 
         internal ServerState State
@@ -64,7 +64,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <summary>
         /// 获取服务中会话的管理函数。
         /// </summary>
-        public WebSocketSessionManager Sessions
+        public WebSocketControllerManager Sessions
         {
             get
             {
@@ -124,7 +124,7 @@ namespace Kogel.Net.WebSocket.Server
         /// 为服务创建一个新会话。
         /// </summary>
         /// <returns></returns>
-        protected abstract WebSocketBehavior CreateSession();
+        protected abstract WebSocketControllerBase CreateSession();
     }
 
     /// <summary>
@@ -132,7 +132,7 @@ namespace Kogel.Net.WebSocket.Server
     /// </summary>
     /// <typeparam name="TBehavior"></typeparam>
     internal class WebSocketServiceHost<TBehavior> : WebSocketServiceHost
-    where TBehavior : WebSocketBehavior
+    where TBehavior : WebSocketControllerBase
     {
         private Func<TBehavior> _creator;
         internal WebSocketServiceHost(string path, Func<TBehavior> creator) : this(path, creator, null)
@@ -172,7 +172,7 @@ namespace Kogel.Net.WebSocket.Server
             };
         }
 
-        protected override WebSocketBehavior CreateSession()
+        protected override WebSocketControllerBase CreateSession()
         {
             return _creator();
         }

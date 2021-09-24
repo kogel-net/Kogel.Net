@@ -293,7 +293,7 @@ namespace Kogel.Net.WebSocket.Server
         }
 
         internal void Add<TBehavior>(string path, Func<TBehavior> creator)
-          where TBehavior : WebSocketBehavior
+          where TBehavior : WebSocketControllerBase
         {
             path = path.TrimSlashFromEnd();
 
@@ -359,7 +359,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="path"></param>
         /// <param name="initializer"></param>
         public void AddService<TBehavior>(string path, Action<TBehavior> initializer)
-          where TBehavior : WebSocketBehavior, new()
+          where TBehavior : WebSocketControllerBase, new()
         {
             if (path == null)
                 throw new ArgumentNullException("path");

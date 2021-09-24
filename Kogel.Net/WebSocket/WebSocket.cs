@@ -515,6 +515,7 @@ namespace Kogel.Net.WebSocket
         /// </summary>
         public event EventHandler OnOpen;
 
+
         /// <summary>
         /// 接受服务器
         /// </summary>

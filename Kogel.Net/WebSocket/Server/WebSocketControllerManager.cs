@@ -15,22 +15,22 @@ namespace Kogel.Net.WebSocket.Server
     /// <summary>
     /// 为WebSocket 服务中的m每个会话提供管理功能
     /// </summary>
-    public class WebSocketSessionManager
+    public class WebSocketControllerManager
     {
         private volatile bool _clean;
         private object _forSweep;
-        private Dictionary<string, IWebSocketSession> _sessions;
+        private Dictionary<string, IControllerSession> _sessions;
         private volatile ServerState _state;
         private volatile bool _sweeping;
         private System.Timers.Timer _sweepTimer;
         private object _sync;
         private TimeSpan _waitTime;
 
-        internal WebSocketSessionManager()
+        internal WebSocketControllerManager()
         {
             _clean = true;
             _forSweep = new object();
-            _sessions = new Dictionary<string, IWebSocketSession>();
+            _sessions = new Dictionary<string, IControllerSession>();
             _state = ServerState.Ready;
             _sync = ((System.Collections.ICollection)_sessions).SyncRoot;
             _waitTime = TimeSpan.FromSeconds(1);
@@ -111,7 +111,7 @@ namespace Kogel.Net.WebSocket.Server
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IWebSocketSession this[string id]
+        public IControllerSession this[string id]
         {
             get
             {
@@ -121,7 +121,7 @@ namespace Kogel.Net.WebSocket.Server
                 if (id.Length == 0)
                     throw new ArgumentException("An empty string.", "id");
 
-                IWebSocketSession session;
+                IControllerSession session;
                 _TryGetSession(id, out session);
 
                 return session;
@@ -162,17 +162,17 @@ namespace Kogel.Net.WebSocket.Server
         /// <summary>
         /// 获取 WebSocket 服务中的会话实例
         /// </summary>
-        public IEnumerable<IWebSocketSession> Sessions
+        public IEnumerable<IControllerSession> Sessions
         {
             get
             {
                 if (_state != ServerState.Start)
-                    return Enumerable.Empty<IWebSocketSession>();
+                    return Enumerable.Empty<IControllerSession>();
 
                 lock (_sync)
                 {
                     if (_state != ServerState.Start)
-                        return Enumerable.Empty<IWebSocketSession>();
+                        return Enumerable.Empty<IControllerSession>();
 
                     return ExtensionMethod.ToList(_sessions.Values);
                 }
@@ -330,6 +330,10 @@ namespace Kogel.Net.WebSocket.Server
             return true;
         }
 
+        /// <summary>
+        /// 创建会话唯一标识
+        /// </summary>
+        /// <returns></returns>
         private static string CreateID()
         {
             return Guid.NewGuid().ToString("N");
@@ -359,7 +363,7 @@ namespace Kogel.Net.WebSocket.Server
             }
         }
 
-        private bool _TryGetSession(string id, out IWebSocketSession session)
+        private bool _TryGetSession(string id, out IControllerSession session)
         {
             session = null;
 
@@ -374,14 +378,16 @@ namespace Kogel.Net.WebSocket.Server
                 return _sessions.TryGetValue(id, out session);
             }
         }
-        internal string Add(IWebSocketSession session)
+        internal string Add(IControllerSession session, string id)
         {
             lock (_sync)
             {
                 if (_state != ServerState.Start)
                     return null;
 
-                var id = CreateID();
+                if (!string.IsNullOrEmpty(id))
+                    id = CreateID();
+
                 _sessions.Add(id, session);
 
                 return id;
@@ -680,7 +686,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="id"></param>
         public void CloseSession(string id)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -698,7 +704,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="reason"></param>
         public void CloseSession(string id, ushort code, string reason)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -716,7 +722,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="reason"></param>
         public void CloseSession(string id, CloseStatusCode code, string reason)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -733,7 +739,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <returns></returns>
         public bool PingTo(string id)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -751,7 +757,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <returns></returns>
         public bool PingTo(string message, string id)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -768,7 +774,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="id"></param>
         public void SendTo(byte[] data, string id)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -785,7 +791,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="id"></param>
         public void SendTo(string data, string id)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -803,7 +809,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="id"></param>
         public void SendTo(Stream stream, int length, string id)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -821,7 +827,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="completed"></param>
         public void SendToAsync(byte[] data, string id, Action<bool> completed)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -839,7 +845,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="completed"></param>
         public void SendToAsync(string data, string id, Action<bool> completed)
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -860,7 +866,7 @@ namespace Kogel.Net.WebSocket.Server
           Stream stream, int length, string id, Action<bool> completed
         )
         {
-            IWebSocketSession session;
+            IControllerSession session;
             if (!TryGetSession(id, out session))
             {
                 var msg = "The session could not be found.";
@@ -902,7 +908,7 @@ namespace Kogel.Net.WebSocket.Server
                     if (_state != ServerState.Start)
                         break;
 
-                    IWebSocketSession session;
+                    IControllerSession session;
                     if (_sessions.TryGetValue(id, out session))
                     {
                         var state = session.ConnectionState;
@@ -925,7 +931,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="id"></param>
         /// <param name="session"></param>
         /// <returns></returns>
-        public bool TryGetSession(string id, out IWebSocketSession session)
+        public bool TryGetSession(string id, out IControllerSession session)
         {
             if (id == null)
                 throw new ArgumentNullException("id");

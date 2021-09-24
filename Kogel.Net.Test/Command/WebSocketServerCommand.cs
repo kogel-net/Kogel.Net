@@ -32,7 +32,7 @@ namespace Kogel.Net.Test.Command
             try
             {
                 _webServer = new WebSocketServer("ws://127.0.0.1:8081");
-                _webServer.AddWebSocketService<TestServerBehavior>("/test");
+                _webServer.AddController<TestController>("/test");
                 _webServer.Start();
                 Console.WriteLine("启动成功!");
                 Console.ReadKey(true);
@@ -47,8 +47,13 @@ namespace Kogel.Net.Test.Command
     /// <summary>
     /// 服务处理类
     /// </summary>
-    public class TestServerBehavior : WebSocketBehavior
+    public class TestController : WebSocketControllerBase
     {
+        protected override string OnUniqueId()
+        {
+            return base.OnUniqueId();
+        }
+
         /// <summary>
         /// 打开
         /// </summary>

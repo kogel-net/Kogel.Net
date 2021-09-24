@@ -16,7 +16,7 @@ namespace Kogel.Net.WebSocket.Server
     /// <summary>
     /// 公开一组用于定义行为的方法和属性由或提供的 WebSocket 服务
     /// </summary>
-    public abstract class WebSocketBehavior : IWebSocketSession
+    public abstract class WebSocketControllerBase : IControllerSession
     {
         private WebSocketContext _context;
         private Func<CookieCollection, CookieCollection, bool> _cookiesValidator;
@@ -25,14 +25,14 @@ namespace Kogel.Net.WebSocket.Server
         private bool _ignoreExtensions;
         private Func<string, bool> _originValidator;
         private string _protocol;
-        private WebSocketSessionManager _sessions;
+        private WebSocketControllerManager _sessions;
         private DateTime _startTime;
         private WebSocket _websocket;
 
         /// <summary>
         /// 
         /// </summary>
-        protected WebSocketBehavior()
+        protected WebSocketControllerBase()
         {
             _startTime = DateTime.MaxValue;
         }
@@ -62,7 +62,7 @@ namespace Kogel.Net.WebSocket.Server
         /// <summary>
         /// 获取服务中会话的管理函数。
         /// </summary>
-        protected WebSocketSessionManager Sessions
+        protected WebSocketControllerManager Sessions
         {
             get
             {
@@ -279,23 +279,28 @@ namespace Kogel.Net.WebSocket.Server
         /// <param name="e"></param>
         private void OnOpen(object sender, EventArgs e)
         {
-            _id = _sessions.Add(this);
+            _id = OnUniqueId();
+            if (!string.IsNullOrEmpty(_id))
+            {
+                _sessions.Add(this, _id);
+            }
             if (_id == null)
             {
                 _websocket.Close(CloseStatusCode.Away);
                 return;
             }
-
             _startTime = DateTime.Now;
             OnOpen();
         }
+
+
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="context"></param>
         /// <param name="sessions"></param>
-        internal void Start(WebSocketContext context, WebSocketSessionManager sessions)
+        internal void Start(WebSocketContext context, WebSocketControllerManager sessions)
         {
             if (_websocket != null)
             {
@@ -447,6 +452,15 @@ namespace Kogel.Net.WebSocket.Server
         /// </summary>
         protected virtual void OnOpen()
         {
+        }
+
+        /// <summary>
+        /// 获取唯一id(默认为guid)
+        /// </summary>
+        /// <returns></returns>
+        protected virtual string OnUniqueId()
+        {
+            return "";
         }
 
         /// <summary>

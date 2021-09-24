@@ -902,7 +902,7 @@ namespace Kogel.Net.WebSocket.Extension
         /// <typeparam name="TBehavior"></typeparam>
         /// <param name="path"></param>
         public void AddWebSocketService<TBehavior>(string path)
-          where TBehavior : WebSocketBehavior, new()
+          where TBehavior : WebSocketControllerBase, new()
         {
             _services.AddService<TBehavior>(path, null);
         }
@@ -914,7 +914,7 @@ namespace Kogel.Net.WebSocket.Extension
         /// <param name="path"></param>
         /// <param name="initializer"></param>
         public void AddWebSocketService<TBehavior>(string path, Action<TBehavior> initializer)
-          where TBehavior : WebSocketBehavior, new()
+          where TBehavior : WebSocketControllerBase, new()
         {
             _services.AddService<TBehavior>(path, initializer);
         }
