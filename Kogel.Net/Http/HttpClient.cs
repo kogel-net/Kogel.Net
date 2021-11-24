@@ -235,7 +235,7 @@ namespace Kogel.Net.Http
         /// <returns></returns>
         protected virtual TResult GetResult<TResult>(KogelResponse response)
         {
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (response.StatusCode == HttpStatusCode.OK && !string.IsNullOrEmpty(response.Result))
                 return (TResult)JsonConvert.DeserializeObject(response.Result, typeof(TResult), CamelCaseOnlyConverter.Settings);
             else
                 return default;
